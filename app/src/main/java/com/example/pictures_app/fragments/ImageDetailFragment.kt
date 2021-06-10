@@ -19,7 +19,7 @@ import com.example.pictures_app.utils.loadContentByGlide
 class ImageDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentImageDetailBinding
-    private val safeArguments: ImageDetailFragmentArgs by navArgs()
+    //private val safeArguments: ImageDetailFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,20 +31,20 @@ class ImageDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUi()
+        //initUi()
     }
 
-    private fun initUi() {
-        setToolbarText(safeArguments.pictureTitle)
-        setDetailPicture()
-    }
-
-    private fun setToolbarText(toolbarString: String?) {
-        binding.toolbarFragmentImageDetail.toolbarTextView.text = toolbarString
-    }
-
-    private fun setDetailPicture() {
-        val pictureUrlWithExtension = safeArguments.pictureUrl
-        binding.detailPictureImageView.loadContentByGlide(pictureUrlWithExtension)
-    }
+//    private fun initUi() {
+//        setToolbarText(safeArguments.pictureTitle)
+//        setDetailPicture()
+//    }
+//
+//    private fun setToolbarText(toolbarString: String?) {
+//        binding.toolbarFragmentImageDetail.toolbarTextView.text = toolbarString
+//    }
+//
+//    private fun setDetailPicture() {
+//        val pictureUrlWithExtension = safeArguments.pictureUrl
+//        binding.detailPictureImageView.loadContentByGlide(pictureUrlWithExtension)
+//    }
 }

@@ -29,6 +29,7 @@ class PicturesApplication : Application() {
         database = PicturesAppDatabase.buildDatabase(instance)
         picturesRepository = PicturesRepositoryImplementation(
             database.picturesDao(),
+            database.albumsDao(),
             instance
         )
     }

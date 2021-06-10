@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ImagesListFragment : Fragment() {
+class ImagesListFragment(val albumId: Long?) : Fragment() {
 
     private val repository = PicturesApplication.picturesRepository
     private lateinit var binding: FragmentImagesListBinding
@@ -61,14 +61,18 @@ class ImagesListFragment : Fragment() {
 
     private fun getPicturesList() {
         binding.imagesListProgressBar.visible()
-        repository.getPictures()
-        repository.picturesListLiveData?.observe(viewLifecycleOwner, { picturesList ->
-            if (!picturesList.isNullOrEmpty()) {
-                onPicturesListReceived(picturesList)
-            } else {
-                onGetPicturesListFailed()
-            }
-        })
+        if (albumId != null) {
+            repository.getPicturesFromAlbumId(albumId)
+            repository.picturesListLiveData?.observe(viewLifecycleOwner, { picturesList ->
+                if (!picturesList.isNullOrEmpty()) {
+                    onPicturesListReceived(picturesList)
+                } else {
+                    onGetPicturesListFailed()
+                }
+            })
+        } else {
+            onGetPicturesListFailed()
+        }
     }
 
     private fun onPicturesListReceived(picturesList: List<PictureModel>) {
@@ -78,15 +82,10 @@ class ImagesListFragment : Fragment() {
 
     private fun onGetPicturesListFailed() {
         binding.imagesListProgressBar.gone()
-        activity?.toast(context?.getString(R.string.failed_to_get_pictures))
+        activity?.toast(context?.getString(R.string.failed_to_get_albums))
     }
 
     private fun onItemSelected(picture: PictureModel) {
-        findNavController().navigate(
-            ImagesListFragmentDirections.actionImagesListFragmentToImageDetailFragment(
-                picture.title,
-                picture.url
-            )
-        )
+        findNavController().navigate(R.id.action_albumsViewPagerFragment_to_imageDetailFragment)
     }
 }

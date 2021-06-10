@@ -48,7 +48,7 @@ class PicturesItemHolder(
         itemBinding.root.setOnClickListener {
             onItemClickListener(picture)
         }
-        itemBinding.picturesThumbnailImageView.loadContentByGlide(picture.thumbnailUrl)
-        itemBinding.picturesTitleTextView.text = picture.title?: "Unknown"
+        itemBinding.picturesThumbnailImageView.loadContentByGlide(picture.pictureThumbnailUrl)
+        itemBinding.picturesTitleTextView.text = picture.pictureTitle?: "Unknown"
     }
 }

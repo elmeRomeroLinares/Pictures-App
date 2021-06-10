@@ -3,17 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/imagesListFragment">
+    app:startDestination="@id/albumsViewPagerFragment">
 
     <fragment
-        android:id="@+id/imagesListFragment"
-        android:name="com.example.pictures_app.fragments.ImagesListFragment"
-        android:label="fragment_images_list"
-        tools:layout="@layout/fragment_images_list" >
+        android:id="@+id/albumsViewPagerFragment"
+        android:name="com.example.pictures_app.fragments.AlbumsViewPagerFragment"
+        android:label="fragment_albums_view_pager"
+        tools:layout="@layout/fragment_albums_view_pager" >
         <action
-            android:id="@+id/action_imagesListFragment_to_imageDetailFragment"
+            android:id="@+id/action_albumsViewPagerFragment_to_imageDetailFragment"
             app:destination="@id/imageDetailFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/imageDetailFragment"
         android:name="com.example.pictures_app.fragments.ImageDetailFragment"

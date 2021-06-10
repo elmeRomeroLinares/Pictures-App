@@ -5,4 +5,5 @@
     <string name="error_loading_thumbnail">Error Loading Image</string>
     <string name="pictures">Pictures</string>
     <string name="failed_to_get_pictures">Failed to Get Pictures</string>
+    <string name="failed_to_get_albums">Failed to Get Albums</string>
 </resources>
