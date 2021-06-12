@@ -23,13 +23,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ImagesListFragment(val albumId: Long?) : Fragment() {
+private const val ALBUM_ID_KEY = "albumKey"
+
+class ImagesListFragment : Fragment() {
 
     private val repository = PicturesApplication.picturesRepository
     private lateinit var binding: FragmentImagesListBinding
     private val picturesRecyclerViewAdapter by lazy {
         PicturesRecyclerViewAdapter(::onItemSelected)
     }
+    private var albumId: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,11 +44,14 @@ class ImagesListFragment(val albumId: Long?) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        arguments?.let {
+            albumId = it.getLong(ALBUM_ID_KEY)
+        }
         initUi()
     }
 
     private fun initUi() {
-        setToolbarText(context?.getString(R.string.pictures))
+        setToolbarText(albumId.toString())
         setPicturesRecyclerView()
         getPicturesList()
     }
@@ -62,7 +68,7 @@ class ImagesListFragment(val albumId: Long?) : Fragment() {
     private fun getPicturesList() {
         binding.imagesListProgressBar.visible()
         if (albumId != null) {
-            repository.getPicturesFromAlbumId(albumId)
+            repository.getPicturesFromAlbumId(albumId as Long)
             repository.picturesListLiveData?.observe(viewLifecycleOwner, { picturesList ->
                 if (!picturesList.isNullOrEmpty()) {
                     onPicturesListReceived(picturesList)
@@ -86,6 +92,23 @@ class ImagesListFragment(val albumId: Long?) : Fragment() {
     }
 
     private fun onItemSelected(picture: PictureModel) {
-        findNavController().navigate(R.id.action_albumsViewPagerFragment_to_imageDetailFragment)
+        findNavController().navigate(
+            AlbumsViewPagerFragmentDirections.openImageDetailFragment(
+                picture.pictureTitle,
+                picture.pictureUrl
+            )
+        )
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(albumId: Long?) =
+            ImagesListFragment().apply {
+                arguments = Bundle().apply {
+                    albumId?.let {
+                        putLong(ALBUM_ID_KEY, it)
+                    }
+                }
+            }
     }
 }

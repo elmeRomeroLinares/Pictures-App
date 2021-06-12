@@ -6,4 +6,7 @@
     <string name="pictures">Pictures</string>
     <string name="failed_to_get_pictures">Failed to Get Pictures</string>
     <string name="failed_to_get_albums">Failed to Get Albums</string>
+    <string name="share">Share!</string>
+    <string name="share_image">Share Image</string>
+    <string name="unable_to_share">Unable to Share Picture</string>
 </resources>

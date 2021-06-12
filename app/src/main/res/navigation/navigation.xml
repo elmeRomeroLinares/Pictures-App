@@ -11,7 +11,7 @@
         android:label="fragment_albums_view_pager"
         tools:layout="@layout/fragment_albums_view_pager" >
         <action
-            android:id="@+id/action_albumsViewPagerFragment_to_imageDetailFragment"
+            android:id="@+id/openImageDetailFragment"
             app:destination="@id/imageDetailFragment" />
     </fragment>
 

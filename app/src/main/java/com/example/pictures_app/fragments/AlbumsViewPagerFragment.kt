@@ -12,6 +12,8 @@ import com.example.pictures_app.adapters.AlbumsViewPagerAdapter
 import com.example.pictures_app.databinding.FragmentAlbumsViewPagerBinding
 import com.example.pictures_app.model.AlbumPicturesModel
 import com.example.pictures_app.utils.toast
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class AlbumsViewPagerFragment : Fragment() {
 
@@ -33,7 +35,6 @@ class AlbumsViewPagerFragment : Fragment() {
     }
 
     private fun initUi() {
-        //set
         getAlbumsList()
     }
 
@@ -49,20 +50,30 @@ class AlbumsViewPagerFragment : Fragment() {
     }
 
     private fun onAlbumsListReceived(albumsList: List<AlbumPicturesModel>) {
-        val fragmentList = mutableListOf<Fragment>()
-        for (album in albumsList) {
-            fragmentList.add(ImagesListFragment(album.albumId))
-        }
-        setAlbumsViewPager(fragmentList)
+        setAlbumsViewPager(albumsList)
     }
 
-    private fun setAlbumsViewPager(fragmentList: List<Fragment>) {
+    private fun setAlbumsViewPager(albumsList: List<AlbumPicturesModel>) {
         viewPagerAdapter = AlbumsViewPagerAdapter(
-            fragmentList,
-            requireActivity().supportFragmentManager,
+            albumsList,
+            childFragmentManager,
             lifecycle
         )
         binding.albumsViewPager.adapter = viewPagerAdapter
+        setTabLayout(albumsList)
+    }
+
+    private fun setTabLayout(albumsList: List<AlbumPicturesModel>) {
+        TabLayoutMediator(binding.albumsTabLayout, binding.albumsViewPager) { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.text = "TAB ONE"
+                }
+                1 -> {
+                    tab.text = "TAB TWO"
+                }
+            }
+        }.attach()
     }
 
     private fun onGetAlbumsListFailed() {
