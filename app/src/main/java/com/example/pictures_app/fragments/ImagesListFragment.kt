@@ -71,7 +71,9 @@ class ImagesListFragment : Fragment() {
             repository.getPicturesFromAlbumId(albumId as Long)
             repository.picturesListLiveData?.observe(viewLifecycleOwner, { picturesList ->
                 if (!picturesList.isNullOrEmpty()) {
-                    onPicturesListReceived(picturesList)
+                    if (isListReceivedAlbumCurrentAlbum(picturesList)) {
+                        onPicturesListReceived(picturesList)
+                    }
                 } else {
                     onGetPicturesListFailed()
                 }
@@ -79,6 +81,11 @@ class ImagesListFragment : Fragment() {
         } else {
             onGetPicturesListFailed()
         }
+    }
+
+    private fun isListReceivedAlbumCurrentAlbum(picturesList: List<PictureModel>): Boolean {
+        return picturesList.firstOrNull()?.pictureAlbumId == albumId
+
     }
 
     private fun onPicturesListReceived(picturesList: List<PictureModel>) {
