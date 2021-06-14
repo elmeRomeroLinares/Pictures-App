@@ -1,12 +1,10 @@
 package com.example.pictures_app.fragments
 
-import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pictures_app.PicturesApplication
@@ -14,14 +12,9 @@ import com.example.pictures_app.R
 import com.example.pictures_app.adapters.PicturesRecyclerViewAdapter
 import com.example.pictures_app.databinding.FragmentImagesListBinding
 import com.example.pictures_app.model.PictureModel
-import com.example.pictures_app.model.Success
-import com.example.pictures_app.networking.NetworkStatusChecker
 import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 private const val ALBUM_ID_KEY = "albumKey"
 
@@ -85,7 +78,6 @@ class ImagesListFragment : Fragment() {
 
     private fun isListReceivedAlbumCurrentAlbum(picturesList: List<PictureModel>): Boolean {
         return picturesList.firstOrNull()?.pictureAlbumId == albumId
-
     }
 
     private fun onPicturesListReceived(picturesList: List<PictureModel>) {
@@ -99,10 +91,14 @@ class ImagesListFragment : Fragment() {
     }
 
     private fun onItemSelected(picture: PictureModel) {
+        val pictureIdString: String? = if (picture.pictureId != null) {
+            picture.pictureId.toString()
+        } else {
+            null
+        }
         findNavController().navigate(
             AlbumsViewPagerFragmentDirections.openImageDetailFragment(
-                picture.pictureTitle,
-                picture.pictureUrl
+                pictureIdString
             )
         )
     }

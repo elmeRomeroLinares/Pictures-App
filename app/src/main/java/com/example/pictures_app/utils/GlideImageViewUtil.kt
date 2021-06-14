@@ -3,7 +3,6 @@ package com.example.pictures_app.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.media.Image
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,14 +13,11 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.SingleRequest
-import com.bumptech.glide.request.target.*
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.example.pictures_app.R
 import com.example.pictures_app.glide.GlideApp
-import com.example.pictures_app.glide.GlideRequest
 
 private const val userAgent =
     "Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36"
@@ -38,9 +34,9 @@ fun ImageView.loadContentByGlide(url: String?): LiveData<Bitmap> {
         .asBitmap()
         .load(glideUrl)
         .placeholder(getCircularProgressDrawable(context))
-        .error(R.drawable.ic_baseline_image_not_supported_24)
         .diskCacheStrategy(DiskCacheStrategy.DATA)
-        .listener(glideRequestListener)
+        .listener(getGlideRequestListener(this))
+        .error(R.drawable.ic_baseline_image_not_supported_24)
         .into(object: CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 imageView.setImageBitmap(resource)
@@ -53,6 +49,30 @@ fun ImageView.loadContentByGlide(url: String?): LiveData<Bitmap> {
         })
 
     return pictureBitmap
+}
+
+private fun getGlideRequestListener(imageView: ImageView) = object: RequestListener<Bitmap> {
+    override fun onLoadFailed(
+        e: GlideException?,
+        model: Any?,
+        target: Target<Bitmap>?,
+        isFirstResource: Boolean
+    ): Boolean {
+        isResourceReady.postValue(false)
+        imageView.setImageResource(R.drawable.ic_baseline_image_not_supported_24)
+        return false
+    }
+
+    override fun onResourceReady(
+        resource: Bitmap?,
+        model: Any?,
+        target: Target<Bitmap>?,
+        dataSource: DataSource?,
+        isFirstResource: Boolean
+    ): Boolean {
+        isResourceReady.postValue(true)
+        return false
+    }
 }
 
 private val glideRequestListener = object: RequestListener<Bitmap> {

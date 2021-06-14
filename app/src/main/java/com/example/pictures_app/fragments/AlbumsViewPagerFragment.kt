@@ -1,18 +1,16 @@
 package com.example.pictures_app.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.Fragment
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.adapters.AlbumsViewPagerAdapter
 import com.example.pictures_app.databinding.FragmentAlbumsViewPagerBinding
 import com.example.pictures_app.model.AlbumPicturesModel
 import com.example.pictures_app.utils.toast
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class AlbumsViewPagerFragment : Fragment() {

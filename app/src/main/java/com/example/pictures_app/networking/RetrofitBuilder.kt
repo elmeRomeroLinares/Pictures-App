@@ -1,12 +1,7 @@
 package com.example.pictures_app.networking
 
-
-
-
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 fun buildClient(): OkHttpClient =

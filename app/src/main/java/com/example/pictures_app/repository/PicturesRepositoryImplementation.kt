@@ -3,12 +3,9 @@ package com.example.pictures_app.repository
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Environment
-import android.provider.Settings
-import android.widget.ImageView
 import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
 import com.example.pictures_app.BuildConfig
@@ -25,7 +22,6 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-
 
 private const val USER_ID: Long = 1
 
@@ -59,11 +55,13 @@ class PicturesRepositoryImplementation(
         }
     }
 
+    override suspend fun getPictureById(id: Long): PictureModel =
+        picturesDao.getLocalPictureById(id)
+
     override fun getPicturesFromAlbumId(albumId: Long){
         //call method from Dao or call method from retrofit
         GlobalScope.launch(Dispatchers.IO) {
             if (networkStatusChecker.hasInternetConnection()){
-                //TODO get actual server data and update database
                 val result = remoteApi.remoteApiGetAlbumPhotos(albumId = albumId)
                 if (result is Success) {
                     onServerPicturesListReceived(result.data)
@@ -78,22 +76,6 @@ class PicturesRepositoryImplementation(
         }
     }
 
-    //    override fun getPictures() {
-//        GlobalScope.launch(Dispatchers.IO) {
-//            if (getAllLocalPictures().isEmpty()) {
-//                if (networkStatusChecker.hasInternetConnection()) {
-//                    val result = remoteApi.remoteApiGetAlbum1Photos()
-//                    if(result is Success) {
-//                        onServerPicturesListReceived(result.data)
-//                    } else {
-//                        onGetPicturesListFailed()
-//                    }
-//                }
-//            } else {
-//                picturesListLiveData.postValue(getAllLocalPictures())
-//            }
-//        }
-//    }
     private suspend fun getAllLocalAlbums(): List<AlbumPicturesModel> = albumsDao.getLocalAlbums()
 
     private suspend fun addAlbumsToDataBase(albums: List<AlbumPicturesModel>) =

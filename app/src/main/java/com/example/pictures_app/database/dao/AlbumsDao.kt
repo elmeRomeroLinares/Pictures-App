@@ -2,7 +2,6 @@ package com.example.pictures_app.database.dao
 
 import androidx.room.*
 import com.example.pictures_app.model.AlbumPicturesModel
-import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.model.PicturesByAlbum
 
 @Dao

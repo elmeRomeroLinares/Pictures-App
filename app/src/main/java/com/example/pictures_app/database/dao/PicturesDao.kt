@@ -14,4 +14,7 @@ interface PicturesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addLocalPictures(picturesToAdd: List<PictureModel>)
+
+    @Query("SELECT * FROM pictures_table WHERE pictureId = :id")
+    suspend fun getLocalPictureById(id: Long): PictureModel
 }

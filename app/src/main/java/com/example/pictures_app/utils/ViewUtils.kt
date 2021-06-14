@@ -2,14 +2,7 @@ package com.example.pictures_app.utils
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
-import com.bumptech.glide.request.RequestOptions
-import com.example.pictures_app.R
-import com.example.pictures_app.glide.GlideApp
 
 
 fun View.visible() {

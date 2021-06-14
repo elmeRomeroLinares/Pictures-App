@@ -3,20 +3,22 @@ package com.example.pictures_app.fragments
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.databinding.FragmentImageDetailBinding
-import com.example.pictures_app.glide.GlideApp
+import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.utils.isResourceReady
 import com.example.pictures_app.utils.loadContentByGlide
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
-import okhttp3.internal.wait
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ImageDetailFragment : Fragment() {
 
@@ -24,6 +26,7 @@ class ImageDetailFragment : Fragment() {
     private val safeArguments: ImageDetailFragmentArgs by navArgs()
     private val repository = PicturesApplication.picturesRepository
     private var bitmap: Bitmap? = null
+    private var picture: PictureModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,26 +47,42 @@ class ImageDetailFragment : Fragment() {
     }
 
     private fun initUi() {
-        setToolbarText(safeArguments.pictureTitle)
-        setDetailPicture()
+        getPicture()
     }
 
-    private fun setToolbarText(toolbarString: String?) {
-        binding.toolbarFragmentImageDetail.toolbarTextView.text = toolbarString
+    private fun getPicture() {
+        if (safeArguments.pictureId != null) {
+            val pictureIdLong = (safeArguments.pictureId as String).toLong()
+            GlobalScope.launch(Dispatchers.Main) {
+                picture = repository.getPictureById(pictureIdLong)
+                setToolbarText()
+                setDetailPicture()
+            }
+        } else {
+            onGetPictureFailed()
+        }
+    }
+
+    private fun setToolbarText() {
+        picture?.let {
+            binding.toolbarFragmentImageDetail.toolbarTextView.text = it.pictureTitle
+        }
     }
 
     private fun setDetailPicture() {
-        binding.detailPictureImageView.loadContentByGlide(safeArguments.pictureUrl)
-            .observe(viewLifecycleOwner, { bitmap ->
-                if (bitmap != null) {
-                    this.bitmap = bitmap
+        picture?.let{
+            binding.detailPictureImageView.loadContentByGlide(it.pictureUrl)
+                .observe(viewLifecycleOwner, { bitmap ->
+                    if (bitmap != null) {
+                        this.bitmap = bitmap
+                    }
+                })
+            isResourceReady.observe(viewLifecycleOwner, { isGlideRequestReady ->
+                if (isGlideRequestReady) {
+                    showShareButton()
                 }
-        })
-        isResourceReady.observe(viewLifecycleOwner, { isGlideRequestReady ->
-            if (isGlideRequestReady) {
-                showShareButton()
-            }
-        })
+            })
+        }
     }
     
     private fun showShareButton() {
@@ -85,6 +104,10 @@ class ImageDetailFragment : Fragment() {
         } else {
             unableToShareContent()
         }
+    }
+
+    private fun onGetPictureFailed() {
+        activity?.toast(getString(R.string.error_message))
     }
 
     private fun unableToShareContent() {

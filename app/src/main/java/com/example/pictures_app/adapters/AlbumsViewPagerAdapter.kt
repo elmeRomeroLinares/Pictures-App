@@ -1,11 +1,9 @@
 package com.example.pictures_app.adapters
 
-import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.pictures_app.fragments.BlankFragmentForTry
 import com.example.pictures_app.fragments.ImagesListFragment
 import com.example.pictures_app.model.AlbumPicturesModel
 
