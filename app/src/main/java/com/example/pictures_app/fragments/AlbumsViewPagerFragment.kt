@@ -65,14 +65,8 @@ class AlbumsViewPagerFragment : Fragment() {
 
     private fun setTabLayout(albumsList: List<AlbumPicturesModel>) {
         TabLayoutMediator(binding.albumsTabLayout, binding.albumsViewPager) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = "TAB ONE"
-                }
-                1 -> {
-                    tab.text = "TAB TWO"
-                }
-            }
+            tab.text = albumsList[position].albumTitle
+
         }.attach()
     }
 
