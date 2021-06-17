@@ -25,4 +25,9 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/aboutPicturesAppFragment"
+        android:name="com.example.pictures_app.fragments.AboutPicturesAppFragment"
+        android:label="fragment_about_pictures_app"
+        tools:layout="@layout/fragment_about_pictures_app" />
 </navigation>

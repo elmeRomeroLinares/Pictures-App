@@ -1,10 +1,10 @@
 package com.example.pictures_app.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.onNavDestinationSelected
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.adapters.AlbumsViewPagerAdapter
