@@ -6,9 +6,15 @@
     <string name="pictures">Pictures</string>
     <string name="failed_to_get_pictures">Failed to Get Pictures</string>
     <string name="failed_to_get_albums">Failed to Get Albums</string>
+    <string name="failed_to_get_posts">Failed to Get Posts</string>
     <string name="share">Share!</string>
     <string name="share_image">Share Image</string>
     <string name="unable_to_share">Unable to Share Picture</string>
     <string name="error_message">En Error Has Ocurred!</string>
     <string name="about">About</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_title">User1</string>
+    <string name="nav_header_subtitle">user1@email.com</string>
+    <string name="menu_posts">Posts</string>
+    <string name="menu_gallery">Albums</string>
 </resources>

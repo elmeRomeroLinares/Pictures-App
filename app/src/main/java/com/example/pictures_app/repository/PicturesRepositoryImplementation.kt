@@ -12,8 +12,10 @@ import com.example.pictures_app.BuildConfig
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.database.dao.AlbumsDao
 import com.example.pictures_app.database.dao.PicturesDao
+import com.example.pictures_app.database.dao.PostsDao
 import com.example.pictures_app.model.AlbumPicturesModel
 import com.example.pictures_app.model.PictureModel
+import com.example.pictures_app.model.PostModel
 import com.example.pictures_app.model.Success
 import com.example.pictures_app.networking.NetworkStatusChecker
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +30,7 @@ private const val USER_ID: Long = 1
 class PicturesRepositoryImplementation(
     private val picturesDao: PicturesDao,
     private val albumsDao: AlbumsDao,
+    private val postsDao: PostsDao,
     private val context: Context
 ) : PicturesRepository {
 
@@ -37,6 +40,7 @@ class PicturesRepositoryImplementation(
     }
     override val picturesListLiveData: MutableLiveData<List<PictureModel>> = MutableLiveData()
     override val albumsListLiveData: MutableLiveData<List<AlbumPicturesModel>> = MutableLiveData()
+    override val postsListLiveData: MutableLiveData<List<PostModel>> = MutableLiveData()
 
     override fun getAllAlbums() {
         GlobalScope.launch(Dispatchers.IO) {
@@ -76,6 +80,23 @@ class PicturesRepositoryImplementation(
         }
     }
 
+    override fun getUserPosts() {
+        GlobalScope.launch(Dispatchers.IO) {
+            if (networkStatusChecker.hasInternetConnection()) {
+                val result = remoteApi.remoteApiGetPosts(USER_ID)
+                if (result is Success) {
+                    onServerPostsListReceived(result.data)
+                } else {
+                    onGetPostsListFailed()
+                }
+            } else if (getAllLocalPosts().isEmpty()){
+                onGetPostsListFailed()
+            } else {
+                postsListLiveData.postValue(getAllLocalPosts())
+            }
+        }
+    }
+
     private suspend fun getAllLocalAlbums(): List<AlbumPicturesModel> = albumsDao.getLocalAlbums()
 
     private suspend fun addAlbumsToDataBase(albums: List<AlbumPicturesModel>) =
@@ -107,6 +128,20 @@ class PicturesRepositoryImplementation(
 
     private fun onGetPicturesListFailed() {
         picturesListLiveData.postValue(null)
+    }
+
+    private suspend fun getAllLocalPosts(): List<PostModel> = postsDao.getLocalPosts()
+
+    private suspend fun addPostsToDataBase(postsList: List<PostModel>) =
+        postsDao.addLocalPosts(postsList)
+
+    private suspend fun onServerPostsListReceived(postsList: List<PostModel>) {
+        postsListLiveData.postValue(postsList)
+        addPostsToDataBase(postsList)
+    }
+
+    private fun onGetPostsListFailed() {
+        postsListLiveData.postValue(null)
     }
 
     override fun getSharePictureIntent(bitmap: Bitmap): Intent? {

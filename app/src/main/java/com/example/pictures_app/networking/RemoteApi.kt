@@ -20,4 +20,10 @@ class RemoteApi(private val apiService: RemoteApiService) {
         Failure(error)
     }
 
+    suspend fun remoteApiGetPosts(userId: Long): Result<List<PostModel>> = try {
+        val remotePosts = apiService.getUserPosts(userId = userId)
+        Success(remotePosts)
+    } catch (error: Throwable) {
+        Failure(error)
+    }
 }

@@ -55,7 +55,7 @@ class ImageDetailFragment : Fragment() {
             val pictureIdLong = (safeArguments.pictureId as String).toLong()
             GlobalScope.launch(Dispatchers.Main) {
                 picture = repository.getPictureById(pictureIdLong)
-                setToolbarText()
+                //setToolbarText()
                 setDetailPicture()
             }
         } else {
@@ -63,11 +63,11 @@ class ImageDetailFragment : Fragment() {
         }
     }
 
-    private fun setToolbarText() {
-        picture?.let {
-            binding.toolbarFragmentImageDetail.toolbarTextView.text = it.pictureTitle
-        }
-    }
+//    private fun setToolbarText() {
+//        picture?.let {
+//            binding.toolbarFragmentImageDetail.toolbarTextView.text = it.pictureTitle
+//        }
+//    }
 
     private fun setDetailPicture() {
         picture?.let{

@@ -28,20 +28,6 @@ class ImagesListFragment : Fragment() {
     }
     private var albumId: Long? = null
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//    }
-////
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.overflow_menu, menu)
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return item.onNavDestinationSelected(findNavController())
-//                || super.onOptionsItemSelected(item)
-//    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,34 +45,34 @@ class ImagesListFragment : Fragment() {
     }
 
     private fun initUi() {
-        setToolbarText(albumId.toString())
-        setToolbarMenu()
+        //setToolbarText(albumId.toString())
+        //setToolbarMenu()
         setPicturesRecyclerView()
         getPicturesList()
     }
 
-    private fun setToolbarText(toolbarString: String?) {
-        binding.toolbarFragmentImagesList.toolbarTextView.text = toolbarString
-    }
+//    private fun setToolbarText(toolbarString: String?) {
+//        binding.toolbarFragmentImagesList.toolbarTextView.text = toolbarString
+//    }
 
-    private fun setToolbarMenu() {
-        binding.toolbarFragmentImagesList.toolbarPicturesApp.inflateMenu(R.menu.overflow_menu)
-        binding.toolbarFragmentImagesList.toolbarPicturesApp.setOnMenuItemClickListener {
-            onMenuItemSelected(it)
-        }
-    }
+//    private fun setToolbarMenu() {
+//        binding.toolbarFragmentImagesList.toolbarPicturesApp.inflateMenu(R.menu.overflow_menu)
+//        binding.toolbarFragmentImagesList.toolbarPicturesApp.setOnMenuItemClickListener {
+//            onMenuItemSelected(it)
+//        }
+//    }
 
-    private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return when (menuItem.itemId) {
-            R.id.aboutPicturesAppFragment -> {
-                findNavController().navigate(R.id.aboutPicturesAppFragment)
-                true
-            }
-            else -> {
-                false
-            }
-        }
-    }
+//    private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+//        return when (menuItem.itemId) {
+//            R.id.aboutPicturesAppFragment -> {
+//                findNavController().navigate(R.id.aboutPicturesAppFragment)
+//                true
+//            }
+//            else -> {
+//                false
+//            }
+//        }
+//    }
 
     private fun setPicturesRecyclerView() {
         binding.imagesListRecyclerView.layoutManager = LinearLayoutManager(context)
