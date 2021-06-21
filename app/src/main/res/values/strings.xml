@@ -17,4 +17,8 @@
     <string name="nav_header_subtitle">user1@email.com</string>
     <string name="menu_posts">Posts</string>
     <string name="menu_gallery">Albums</string>
+    <string name="unknown">Unknown</string>
+    <string name="user_posts">User Posts</string>
+    <string name="loading_message">Loading &#8230;</string>
+    <string name="album">Album&#160;</string>
 </resources>

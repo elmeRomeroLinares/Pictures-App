@@ -1,5 +1,6 @@
 package com.example.pictures_app.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -12,10 +13,7 @@ import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.databinding.FragmentImageDetailBinding
 import com.example.pictures_app.model.PictureModel
-import com.example.pictures_app.utils.isResourceReady
-import com.example.pictures_app.utils.loadContentByGlide
-import com.example.pictures_app.utils.toast
-import com.example.pictures_app.utils.visible
+import com.example.pictures_app.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -47,6 +45,7 @@ class ImageDetailFragment : Fragment() {
     }
 
     private fun initUi() {
+        setToolbarText(getString(R.string.loading_message))
         getPicture()
     }
 
@@ -55,7 +54,7 @@ class ImageDetailFragment : Fragment() {
             val pictureIdLong = (safeArguments.pictureId as String).toLong()
             GlobalScope.launch(Dispatchers.Main) {
                 picture = repository.getPictureById(pictureIdLong)
-                //setToolbarText()
+                setToolbarText(picture?.pictureTitle)
                 setDetailPicture()
             }
         } else {
@@ -63,11 +62,10 @@ class ImageDetailFragment : Fragment() {
         }
     }
 
-//    private fun setToolbarText() {
-//        picture?.let {
-//            binding.toolbarFragmentImageDetail.toolbarTextView.text = it.pictureTitle
-//        }
-//    }
+    private fun setToolbarText(pictureTitle: String?) {
+        val title = pictureTitle?: getString(R.string.unknown)
+        (activity as ActionBarTitleSetter).setTitle(title)
+    }
 
     private fun setDetailPicture() {
         picture?.let{
@@ -95,7 +93,7 @@ class ImageDetailFragment : Fragment() {
     private fun onShareButtonPress() {
         if(bitmap != null) {
             val sharePictureIntent: Intent? =
-                repository.getSharePictureIntent(bitmap as Bitmap)
+                SharePictureUtil().getSharePictureIntent(bitmap as Bitmap, requireContext())
             if (sharePictureIntent != null) {
                 startActivity(Intent.createChooser(sharePictureIntent, getString(R.string.share_image)))
             } else {
@@ -108,6 +106,7 @@ class ImageDetailFragment : Fragment() {
 
     private fun onGetPictureFailed() {
         activity?.toast(getString(R.string.error_message))
+        setToolbarText(getString(R.string.error_message))
     }
 
     private fun unableToShareContent() {

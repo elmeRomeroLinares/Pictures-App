@@ -12,6 +12,7 @@ import com.example.pictures_app.adapters.PostsRecyclerViewAdapter
 import com.example.pictures_app.databinding.ActivityMainBinding
 import com.example.pictures_app.databinding.FragmentPostsListBinding
 import com.example.pictures_app.model.PostModel
+import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
@@ -37,8 +38,18 @@ class PostsListFragment : Fragment() {
     }
 
     private fun initUi() {
+        setToolbarText()
         setPostsRecyclerView()
         getPostsList()
+    }
+
+    private fun setToolbarText() {
+        (activity as ActionBarTitleSetter).setTitle(getString(R.string.user_posts))
+    }
+
+    private fun setPostsRecyclerView() {
+        binding.postsRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.postsRecyclerView.adapter = postsRecyclerViewAdapter
     }
 
     private fun getPostsList() {
@@ -51,11 +62,6 @@ class PostsListFragment : Fragment() {
                 onGetPostsListFailed()
             }
         })
-    }
-
-    private fun setPostsRecyclerView() {
-        binding.postsRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.postsRecyclerView.adapter = postsRecyclerViewAdapter
     }
 
     private fun onPostsListReceived(postsList: List<PostModel>) {

@@ -10,6 +10,7 @@ import com.example.pictures_app.R
 import com.example.pictures_app.adapters.AlbumsViewPagerAdapter
 import com.example.pictures_app.databinding.FragmentAlbumsViewPagerBinding
 import com.example.pictures_app.model.AlbumPicturesModel
+import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.toast
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -33,7 +34,12 @@ class AlbumsViewPagerFragment : Fragment() {
     }
 
     private fun initUi() {
+        setToolbarText()
         getAlbumsList()
+    }
+
+    private fun setToolbarText() {
+        (activity as ActionBarTitleSetter).setTitle(getString(R.string.loading_message))
     }
 
     private fun getAlbumsList() {

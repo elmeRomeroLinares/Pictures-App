@@ -3,6 +3,7 @@ package com.example.pictures_app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -12,9 +13,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.pictures_app.databinding.ActivityMainBinding
+import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var activityMainBinding: ActivityMainBinding
@@ -56,8 +58,16 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun setTitle(title: String) {
+        supportActionBar?.title = title
     }
 }

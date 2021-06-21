@@ -13,6 +13,7 @@ import com.example.pictures_app.R
 import com.example.pictures_app.adapters.PicturesRecyclerViewAdapter
 import com.example.pictures_app.databinding.FragmentImagesListBinding
 import com.example.pictures_app.model.PictureModel
+import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
@@ -45,34 +46,16 @@ class ImagesListFragment : Fragment() {
     }
 
     private fun initUi() {
-        //setToolbarText(albumId.toString())
-        //setToolbarMenu()
+        setToolbarText(albumId.toString())
         setPicturesRecyclerView()
         getPicturesList()
     }
 
-//    private fun setToolbarText(toolbarString: String?) {
-//        binding.toolbarFragmentImagesList.toolbarTextView.text = toolbarString
-//    }
-
-//    private fun setToolbarMenu() {
-//        binding.toolbarFragmentImagesList.toolbarPicturesApp.inflateMenu(R.menu.overflow_menu)
-//        binding.toolbarFragmentImagesList.toolbarPicturesApp.setOnMenuItemClickListener {
-//            onMenuItemSelected(it)
-//        }
-//    }
-
-//    private fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//        return when (menuItem.itemId) {
-//            R.id.aboutPicturesAppFragment -> {
-//                findNavController().navigate(R.id.aboutPicturesAppFragment)
-//                true
-//            }
-//            else -> {
-//                false
-//            }
-//        }
-//    }
+    private fun setToolbarText(toolbarString: String?) {
+        val title: String = toolbarString?: getString(R.string.unknown)
+        val albumTitle: String = getString(R.string.album) + title
+        (activity as ActionBarTitleSetter).setTitle(albumTitle)
+    }
 
     private fun setPicturesRecyclerView() {
         binding.imagesListRecyclerView.layoutManager = LinearLayoutManager(context)
