@@ -11,7 +11,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class SharePictureUtil {
+object SharePictureUtil {
 
     fun getSharePictureIntent(bitmap: Bitmap, context: Context): Intent? {
         val bitmapUri = getFileUriFromBitmap(bitmap, context)

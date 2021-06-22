@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.model.PostModel
 
 @Dao

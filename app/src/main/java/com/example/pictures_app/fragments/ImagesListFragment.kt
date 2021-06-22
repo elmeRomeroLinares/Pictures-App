@@ -1,12 +1,13 @@
 package com.example.pictures_app.fragments
 
 import android.os.Bundle
-import android.view.*
-import androidx.appcompat.widget.Toolbar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
@@ -100,16 +101,21 @@ class ImagesListFragment : Fragment() {
         } else {
             null
         }
-        findNavController().navigate(AlbumsViewPagerFragmentDirections.openImageDetailFragment(
-            pictureIdString
-        ), navOptions {
-            anim {
-                enter = R.anim.slide_in_right
-                exit = R.anim.slide_out_left
-                popEnter = R.anim.slide_in_left
-                popExit = R.anim.slide_out_right
+        findNavController().navigate(
+            AlbumsViewPagerFragmentDirections.openImageDetailFragment(pictureIdString),
+            navOptions {
+                animationBuilder(this)
             }
-        })
+        )
+    }
+
+    private fun animationBuilder(navOptionsBuilder: NavOptionsBuilder) {
+        return navOptionsBuilder.anim {
+            enter = R.anim.slide_in_right
+            exit = R.anim.slide_out_left
+            popEnter = R.anim.slide_in_left
+            popExit = R.anim.slide_out_right
+        }
     }
 
     companion object {

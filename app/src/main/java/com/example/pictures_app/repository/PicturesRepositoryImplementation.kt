@@ -1,14 +1,8 @@
 package com.example.pictures_app.repository
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.ConnectivityManager
-import android.net.Uri
-import android.os.Environment
-import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
-import com.example.pictures_app.BuildConfig
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.database.dao.AlbumsDao
 import com.example.pictures_app.database.dao.PicturesDao
@@ -21,9 +15,6 @@ import com.example.pictures_app.networking.NetworkStatusChecker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 private const val USER_ID: Long = 1
 
@@ -142,36 +133,5 @@ class PicturesRepositoryImplementation(
 
     private fun onGetPostsListFailed() {
         postsListLiveData.postValue(null)
-    }
-
-    override fun getSharePictureIntent(bitmap: Bitmap): Intent? {
-        val bitmapUri = getFileUriFromBitmap(bitmap)
-        val shareIntent = Intent()
-        shareIntent.action = Intent.ACTION_SEND
-        shareIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri)
-        shareIntent.type = "image/*"
-
-        return if (bitmapUri != null) {
-            shareIntent
-        } else {
-            null
-        }
-    }
-
-    private fun getFileUriFromBitmap(bitmap: Bitmap): Uri? {
-        var bitmapUri: Uri? = null
-        try {
-            val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                "share_image_" + System.currentTimeMillis() + ".png")
-            val outputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
-            outputStream.close()
-            bitmapUri = FileProvider.getUriForFile(
-                context, BuildConfig.APPLICATION_ID + ".provider", file
-            )
-        } catch (error: IOException) {
-            error.printStackTrace()
-        }
-        return bitmapUri
     }
 }

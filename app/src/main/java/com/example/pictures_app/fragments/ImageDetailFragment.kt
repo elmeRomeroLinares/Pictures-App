@@ -1,6 +1,5 @@
 package com.example.pictures_app.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -14,6 +13,7 @@ import com.example.pictures_app.R
 import com.example.pictures_app.databinding.FragmentImageDetailBinding
 import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.utils.*
+import com.example.pictures_app.utils.SharePictureUtil.getSharePictureIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -45,7 +45,6 @@ class ImageDetailFragment : Fragment() {
     }
 
     private fun initUi() {
-        setToolbarText(getString(R.string.loading_message))
         getPicture()
     }
 
@@ -93,7 +92,7 @@ class ImageDetailFragment : Fragment() {
     private fun onShareButtonPress() {
         if(bitmap != null) {
             val sharePictureIntent: Intent? =
-                SharePictureUtil().getSharePictureIntent(bitmap as Bitmap, requireContext())
+                getSharePictureIntent(bitmap as Bitmap, requireContext())
             if (sharePictureIntent != null) {
                 startActivity(Intent.createChooser(sharePictureIntent, getString(R.string.share_image)))
             } else {

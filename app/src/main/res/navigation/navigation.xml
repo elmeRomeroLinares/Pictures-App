@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/albumsViewPagerFragment"
         android:name="com.example.pictures_app.fragments.AlbumsViewPagerFragment"
-        android:label="fragment_albums_view_pager"
+        android:label="@string/album"
         tools:layout="@layout/fragment_albums_view_pager" >
         <action
             android:id="@+id/openImageDetailFragment"
@@ -18,7 +18,6 @@
     <fragment
         android:id="@+id/imageDetailFragment"
         android:name="com.example.pictures_app.fragments.ImageDetailFragment"
-        android:label="fragment_image_detail"
         tools:layout="@layout/fragment_image_detail" >
         <argument
             android:name="pictureId"
@@ -29,12 +28,12 @@
     <fragment
         android:id="@+id/postsListFragment"
         android:name="com.example.pictures_app.fragments.PostsListFragment"
-        android:label="fragment_posts_list"
+        android:label="@string/user_posts"
         tools:layout="@layout/fragment_posts_list" />
 
     <fragment
         android:id="@+id/aboutPicturesAppFragment"
         android:name="com.example.pictures_app.fragments.AboutPicturesAppFragment"
-        android:label="fragment_about_pictures_app"
+        android:label="About Pictures App"
         tools:layout="@layout/fragment_about_pictures_app" />
 </navigation>

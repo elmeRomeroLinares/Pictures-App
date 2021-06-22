@@ -8,10 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.example.pictures_app.databinding.ActivityMainBinding
 import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.google.android.material.navigation.NavigationView
@@ -20,6 +17,7 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var activityMainBinding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +32,13 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
         val drawerLayout: DrawerLayout = activityMainBinding.drawerLayout
         val navView: NavigationView = activityMainBinding.navView
         val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
 
-        setAppBarConfiguration(drawerLayout, navController, navView)
+        setAppBarConfiguration(drawerLayout, navView)
     }
 
     private fun setAppBarConfiguration(
         drawerLayout: DrawerLayout,
-        navController: NavController,
         navView: NavigationView
     ) {
         appBarConfiguration = AppBarConfiguration(
@@ -59,7 +56,8 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+        return item.onNavDestinationSelected(navController)
+                || super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {

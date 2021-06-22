@@ -1,7 +1,5 @@
 package com.example.pictures_app.repository
 
-import android.content.Intent
-import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import com.example.pictures_app.model.AlbumPicturesModel
 import com.example.pictures_app.model.PictureModel
@@ -22,6 +20,4 @@ interface PicturesRepository {
     fun getPicturesFromAlbumId(albumId: Long)
 
     fun getUserPosts()
-
-    fun getSharePictureIntent(bitmap: Bitmap): Intent?
 }
