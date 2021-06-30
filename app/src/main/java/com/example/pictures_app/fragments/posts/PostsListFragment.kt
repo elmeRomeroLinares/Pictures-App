@@ -1,39 +1,54 @@
-package com.example.pictures_app.fragments
+package com.example.pictures_app.fragments.posts
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.adapters.PostsRecyclerViewAdapter
 import com.example.pictures_app.databinding.FragmentPostsListBinding
 import com.example.pictures_app.model.PostModel
-import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
 
 class PostsListFragment : Fragment() {
 
-    private val postsRecyclerViewAdapter by lazy { PostsRecyclerViewAdapter() }
-    private lateinit var binding: FragmentPostsListBinding
-    private val repository = PicturesApplication.picturesRepository
+    private lateinit var postsListFragmentViewModel: PostsListFragmentViewModel
 
+    private var _binding: FragmentPostsListBinding? = null
+    private val binding get() = _binding!!
+
+    private val postsRecyclerViewAdapter by lazy {
+        PostsRecyclerViewAdapter(::onPostSelected)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPostsListBinding.inflate(inflater)
-        return binding.root
+        _binding = FragmentPostsListBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        postsListFragmentViewModel =
+            ViewModelProvider(this).get(PostsListFragmentViewModel::class.java)
+
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initUi() {
@@ -48,8 +63,7 @@ class PostsListFragment : Fragment() {
 
     private fun getPostsList() {
         binding.postsListProgressBar.visible()
-        repository.getUserPosts()
-        repository.postsListLiveData.observe(viewLifecycleOwner, { postsList ->
+        postsListFragmentViewModel.postsList.observe(viewLifecycleOwner, { postsList ->
             if(!postsList.isNullOrEmpty()) {
                 onPostsListReceived(postsList)
             } else {
@@ -66,5 +80,12 @@ class PostsListFragment : Fragment() {
     private fun onGetPostsListFailed() {
         binding.postsListProgressBar.gone()
         activity?.toast(context?.getString(R.string.failed_to_get_posts))
+    }
+
+    private fun onPostSelected(post: PostModel) {
+        findNavController().navigate(
+            PostsListFragmentDirections
+                .actionPostsListFragmentToPostDetailFragment(post.postId.toString())
+        )
     }
 }

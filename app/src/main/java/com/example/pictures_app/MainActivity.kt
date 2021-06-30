@@ -1,31 +1,79 @@
 package com.example.pictures_app
 
+import android.content.ContentValues.TAG
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.example.pictures_app.databinding.ActivityMainBinding
+import com.example.pictures_app.fragments.albums.AlbumsViewPagerFragmentDirections
 import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var activityMainBinding: ActivityMainBinding
+
+    private var _binding: ActivityMainBinding? = null
+    private val activityMainBinding get() = _binding!!
+
+    private lateinit var mainActivityViewModel: MainActivityViewModel
+
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        mainActivityViewModel = ViewModelProvider(this)
+            .get(MainActivityViewModel::class.java)
+
+        openFromFirebaseDynamicLink()
+
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
+
         setSupportActionBar(activityMainBinding.appBarMain.toolbar)
+
         initUi()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        openFromFirebaseDynamicLink()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.overflow_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return item.onNavDestinationSelected(navController)
+                || super.onOptionsItemSelected(item)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     private fun initUi() {
@@ -50,19 +98,35 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
         navView.setupWithNavController(navController)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.overflow_menu, menu)
-        return true
+    private fun openFromFirebaseDynamicLink() {
+        Firebase.dynamicLinks
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                if (pendingDynamicLinkData != null) {
+                    if (mainActivityViewModel.dynamicLinkData.value != pendingDynamicLinkData.link) {
+                        navigateToDeepLinkDestination(pendingDynamicLinkData.link)
+                        mainActivityViewModel.dynamicLinkData.postValue(pendingDynamicLinkData.link)
+                    }
+                }
+            }
+            .addOnFailureListener(this) {e -> Log.w(TAG, "getDynamicLink:onFailure", e)}
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(navController)
-                || super.onOptionsItemSelected(item)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    private fun navigateToDeepLinkDestination(deepLinkUri: Uri?) {
+        val lastPathSegment = deepLinkUri?.lastPathSegment
+        val queryParameters = deepLinkUri?.getQueryParameter("id")
+        val bundle = bundleOf("elementId" to queryParameters)
+        if (lastPathSegment == "posts") {
+            navController.navigate(
+                R.id.postDetailFragment,
+                bundle
+            )
+        } else if (lastPathSegment == "photos") {
+            navController.navigate(
+                R.id.imageDetailFragment,
+                bundle
+            )
+        }
     }
 
     override fun setTitle(title: String) {

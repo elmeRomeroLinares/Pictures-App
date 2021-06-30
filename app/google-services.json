@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "878467467663",
+    "firebase_url": "https://api-strainer.firebaseio.com",
+    "project_id": "api-strainer",
+    "storage_bucket": "api-strainer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:878467467663:android:539ec7cd256f763007e3fa",
+        "android_client_info": {
+          "package_name": "com.example.pictures_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "878467467663-5jq0cett8lcg3gblrgij885a731pusqg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pictures_app",
+            "certificate_hash": "c916bdd36c31a4b5e7ca7cb5466b0bf4cbd5bfcd"
+          }
+        },
+        {
+          "client_id": "878467467663-s0qp0c81dnpq99vh8athgkkg43qe042l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHsYjrZcTjmVpyRxH_0Mz5oRsMsb-bHKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "878467467663-s0qp0c81dnpq99vh8athgkkg43qe042l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

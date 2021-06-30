@@ -5,29 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.about.AboutPicturesAppFragment">
+    tools:context=".fragments.post_detail.PostDetailFragment">
 
     <TextView
-        android:id="@+id/textView2"
-        style="@style/h2_default"
+        android:id="@+id/detail_post_title_tv"
+        style="@style/post_title_text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="@string/about_pictures_app"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="sunt aut facere repellat provident occaecati excepturi optio reprehenderit" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/theme_selector_switch"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/detail_post_body_tv"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/dark_theme"
-        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/post_body_text_style"
+        tools:text="quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/detail_post_title_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

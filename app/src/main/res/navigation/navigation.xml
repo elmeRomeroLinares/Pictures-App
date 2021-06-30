@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/albumsViewPagerFragment"
-        android:name="com.example.pictures_app.fragments.AlbumsViewPagerFragment"
+        android:name="com.example.pictures_app.fragments.albums.AlbumsViewPagerFragment"
         android:label="@string/album"
         tools:layout="@layout/fragment_albums_view_pager" >
         <action
@@ -17,23 +17,37 @@
 
     <fragment
         android:id="@+id/imageDetailFragment"
-        android:name="com.example.pictures_app.fragments.ImageDetailFragment"
+        android:name="com.example.pictures_app.fragments.image_detail.ImageDetailFragment"
         tools:layout="@layout/fragment_image_detail" >
         <argument
-            android:name="pictureId"
+            android:name="elementId"
             app:argType="string"
             app:nullable="true" />
     </fragment>
 
     <fragment
         android:id="@+id/postsListFragment"
-        android:name="com.example.pictures_app.fragments.PostsListFragment"
+        android:name="com.example.pictures_app.fragments.posts.PostsListFragment"
         android:label="@string/user_posts"
-        tools:layout="@layout/fragment_posts_list" />
+        tools:layout="@layout/fragment_posts_list" >
+        <action
+            android:id="@+id/action_postsListFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.example.pictures_app.fragments.post_detail.PostDetailFragment"
+        tools:layout="@layout/fragment_post_detail">
+        <argument
+            android:name="elementId"
+            app:argType="string"
+            app:nullable="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/aboutPicturesAppFragment"
-        android:name="com.example.pictures_app.fragments.AboutPicturesAppFragment"
+        android:name="com.example.pictures_app.fragments.about.AboutPicturesAppFragment"
         android:label="About Pictures App"
         tools:layout="@layout/fragment_about_pictures_app" />
 </navigation>

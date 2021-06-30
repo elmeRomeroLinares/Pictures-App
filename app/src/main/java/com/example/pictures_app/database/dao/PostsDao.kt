@@ -14,4 +14,7 @@ interface PostsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addLocalPosts(postsToAdd: List<PostModel>)
+
+    @Query("SELECT * FROM posts_table WHERE postId = :id")
+    suspend fun getLocalPostById(id: Long): PostModel
 }

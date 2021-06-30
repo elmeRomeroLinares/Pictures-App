@@ -30,77 +30,70 @@ class PicturesRepositoryImplementation(
         NetworkStatusChecker(context.getSystemService(ConnectivityManager::class.java))
     }
     override val picturesListLiveData: MutableLiveData<List<PictureModel>> = MutableLiveData()
-    override val albumsListLiveData: MutableLiveData<List<AlbumPicturesModel>> = MutableLiveData()
     override val postsListLiveData: MutableLiveData<List<PostModel>> = MutableLiveData()
 
-    override fun getAllAlbums() {
-        GlobalScope.launch(Dispatchers.IO) {
-            if (networkStatusChecker.hasInternetConnection()) {
-                val result = remoteApi.remoteApiGetAlbums(USER_ID)
-                if (result is Success) {
-                    onServerAlbumsListReceived(result.data)
-                } else {
-                    onGetServerAlbumsListFailed()
-                }
-            } else if (getAllLocalAlbums().isEmpty()) {
-                onGetServerAlbumsListFailed()
+    override suspend fun getAllAlbums(): List<AlbumPicturesModel>? {
+        if (networkStatusChecker.hasInternetConnection()) {
+            val result = remoteApi.remoteApiGetAlbums(USER_ID)
+            return if (result is Success) {
+                onServerAlbumsListReceived(result.data)
             } else {
-                albumsListLiveData.postValue(getAllLocalAlbums())
+                null
             }
+        } else if (getAllLocalAlbums().isEmpty()) {
+            return null
+        } else {
+            return getAllLocalAlbums()
         }
     }
 
     override suspend fun getPictureById(id: Long): PictureModel =
         picturesDao.getLocalPictureById(id)
 
-    override fun getPicturesFromAlbumId(albumId: Long){
-        //call method from Dao or call method from retrofit
-        GlobalScope.launch(Dispatchers.IO) {
-            if (networkStatusChecker.hasInternetConnection()){
-                val result = remoteApi.remoteApiGetAlbumPhotos(albumId = albumId)
-                if (result is Success) {
-                    onServerPicturesListReceived(result.data)
-                } else {
-                    onGetPicturesListFailed()
-                }
-            } else if (getAllLocalPicturesByAlbumId(albumId).isEmpty()) {
-                onGetPicturesListFailed()
+    override suspend fun getPicturesFromAlbumId(albumId: Long): List<PictureModel> {
+        if (networkStatusChecker.hasInternetConnection()) {
+            val result = remoteApi.remoteApiGetAlbumPhotos(albumId = albumId)
+            return if (result is Success) {
+                onServerPicturesListReceived(result.data)
             } else {
-                picturesListLiveData.postValue(getAllLocalPicturesByAlbumId(albumId))
+                emptyList()
             }
+        } else if (getAllLocalPicturesByAlbumId(albumId).isEmpty()) {
+            return emptyList()
+        } else {
+            return getAllLocalPicturesByAlbumId(albumId)
         }
     }
 
-    override fun getUserPosts() {
-        GlobalScope.launch(Dispatchers.IO) {
-            if (networkStatusChecker.hasInternetConnection()) {
-                val result = remoteApi.remoteApiGetPosts(USER_ID)
-                if (result is Success) {
-                    onServerPostsListReceived(result.data)
-                } else {
-                    onGetPostsListFailed()
-                }
-            } else if (getAllLocalPosts().isEmpty()){
-                onGetPostsListFailed()
+    override suspend fun getUserPosts(): List<PostModel>? {
+        if (networkStatusChecker.hasInternetConnection()) {
+            val result = remoteApi.remoteApiGetPosts(USER_ID)
+            if (result is Success) {
+                return onServerPostsListReceived(result.data)
             } else {
-                postsListLiveData.postValue(getAllLocalPosts())
+                return null
             }
+        } else if (getAllLocalPosts().isEmpty()) {
+            return null
+        } else {
+            return getAllLocalPosts()
         }
     }
+
+    override suspend fun getPostById(id: Long): PostModel =
+        postsDao.getLocalPostById(id)
 
     private suspend fun getAllLocalAlbums(): List<AlbumPicturesModel> = albumsDao.getLocalAlbums()
 
     private suspend fun addAlbumsToDataBase(albums: List<AlbumPicturesModel>) =
         albumsDao.addLocalAlbums(albums)
 
-    private suspend fun onServerAlbumsListReceived(albumsList: List<AlbumPicturesModel>) {
+    private suspend fun onServerAlbumsListReceived(
+        albumsList: List<AlbumPicturesModel>
+    ): List<AlbumPicturesModel> {
         val choppedAlbumsList = albumsList.dropLast(albumsList.size - 2)
-        albumsListLiveData.postValue(choppedAlbumsList)
         addAlbumsToDataBase(choppedAlbumsList)
-    }
-
-    private fun onGetServerAlbumsListFailed() {
-        albumsListLiveData.postValue(null)
+        return choppedAlbumsList
     }
 
     private suspend fun getAllLocalPicturesByAlbumId(albumId: Long): List<PictureModel> {
@@ -111,14 +104,12 @@ class PicturesRepositoryImplementation(
     private suspend fun addPicturesToDataBase(pictures: List<PictureModel>) =
         picturesDao.addLocalPictures(pictures)
 
-    private suspend fun onServerPicturesListReceived(picturesList: List<PictureModel>) {
+    private suspend fun onServerPicturesListReceived(
+        picturesList: List<PictureModel>
+    ): List<PictureModel> {
         val choppedPicturesList = picturesList.dropLast(picturesList.size - 25)
-        picturesListLiveData.postValue(choppedPicturesList)
         addPicturesToDataBase(choppedPicturesList)
-    }
-
-    private fun onGetPicturesListFailed() {
-        picturesListLiveData.postValue(null)
+        return choppedPicturesList
     }
 
     private suspend fun getAllLocalPosts(): List<PostModel> = postsDao.getLocalPosts()
@@ -126,12 +117,8 @@ class PicturesRepositoryImplementation(
     private suspend fun addPostsToDataBase(postsList: List<PostModel>) =
         postsDao.addLocalPosts(postsList)
 
-    private suspend fun onServerPostsListReceived(postsList: List<PostModel>) {
-        postsListLiveData.postValue(postsList)
+    private suspend fun onServerPostsListReceived(postsList: List<PostModel>): List<PostModel> {
         addPostsToDataBase(postsList)
-    }
-
-    private fun onGetPostsListFailed() {
-        postsListLiveData.postValue(null)
+        return postsList
     }
 }

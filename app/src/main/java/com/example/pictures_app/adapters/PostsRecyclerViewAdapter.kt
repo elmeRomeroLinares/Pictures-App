@@ -2,11 +2,14 @@ package com.example.pictures_app.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pictures_app.databinding.ItemPostsRecyclerViewBinding
 import com.example.pictures_app.model.PostModel
 
-class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostItemHolder>() {
+class PostsRecyclerViewAdapter(
+    private val onItemClickListener: (PostModel) -> Unit
+) : RecyclerView.Adapter<PostItemHolder>() {
 
     private val recyclerViewData: MutableList<PostModel> = mutableListOf()
 
@@ -20,7 +23,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostItemHolder>() {
     }
 
     override fun onBindViewHolder(holder: PostItemHolder, position: Int) {
-        holder.bindPostData(recyclerViewData[position])
+        holder.bindPostData(recyclerViewData[position], onItemClickListener)
     }
 
     override fun getItemCount() = recyclerViewData.size
@@ -36,7 +39,10 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostItemHolder>() {
 class PostItemHolder(
     private val binding: ItemPostsRecyclerViewBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bindPostData(post: PostModel) {
+    fun bindPostData(post: PostModel, onItemClickListener: (PostModel) -> Unit) {
+        binding.root.setOnClickListener {
+            onItemClickListener(post)
+        }
         binding.postTitleTv.text = post.postTitle
         binding.postBodyTv.text = post.postBody
     }

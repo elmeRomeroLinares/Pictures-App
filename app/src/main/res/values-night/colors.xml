@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="h2_text_style_color">@color/white</color>
+    <color name="h3_text_style_color">@android:color/darker_gray</color>
+    <color name="list_divider_color">#CF6679</color>
+</resources>

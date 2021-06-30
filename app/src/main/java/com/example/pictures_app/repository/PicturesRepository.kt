@@ -9,15 +9,15 @@ interface PicturesRepository {
 
     val picturesListLiveData: MutableLiveData<List<PictureModel>>?
 
-    val albumsListLiveData: MutableLiveData<List<AlbumPicturesModel>>?
-
     val postsListLiveData: MutableLiveData<List<PostModel>>
 
-    fun getAllAlbums()
+    suspend fun getAllAlbums(): List<AlbumPicturesModel>?
 
     suspend fun getPictureById(id: Long): PictureModel
 
-    fun getPicturesFromAlbumId(albumId: Long)
+    suspend fun getPicturesFromAlbumId(albumId: Long): List<PictureModel>
 
-    fun getUserPosts()
+    suspend fun getUserPosts(): List<PostModel>?
+
+    suspend fun getPostById(id: Long): PostModel
 }

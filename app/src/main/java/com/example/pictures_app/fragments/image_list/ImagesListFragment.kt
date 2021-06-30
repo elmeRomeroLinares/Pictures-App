@@ -1,10 +1,12 @@
-package com.example.pictures_app.fragments
+package com.example.pictures_app.fragments.image_list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
@@ -13,6 +15,7 @@ import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.adapters.PicturesRecyclerViewAdapter
 import com.example.pictures_app.databinding.FragmentImagesListBinding
+import com.example.pictures_app.fragments.albums.AlbumsViewPagerFragmentDirections
 import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.gone
@@ -23,37 +26,70 @@ private const val ALBUM_ID_KEY = "albumKey"
 
 class ImagesListFragment : Fragment() {
 
-    private val repository = PicturesApplication.picturesRepository
-    private lateinit var binding: FragmentImagesListBinding
+    private var imageListFragmentViewModel: ImagesListFragmentViewModel? = null
+    private var imagesListFragmentViewModelFactory: ImagesListFragmentViewModelFactory? = null
+
+    private var _binding: FragmentImagesListBinding? = null
+    private val binding get() = _binding!!
+
     private val picturesRecyclerViewAdapter by lazy {
         PicturesRecyclerViewAdapter(::onItemSelected)
     }
-    private var albumId: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentImagesListBinding.inflate(inflater)
-        return binding.root
+        _binding = FragmentImagesListBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        arguments?.let {
+            imagesListFragmentViewModelFactory =
+                ImagesListFragmentViewModelFactory(it.getLong(ALBUM_ID_KEY))
+
+            imageListFragmentViewModel = try {
+                ViewModelProvider(
+                    this,
+                    imagesListFragmentViewModelFactory as ImagesListFragmentViewModelFactory
+                ).get(ImagesListFragmentViewModel::class.java)
+            } catch (e: Throwable) {
+                onGetPicturesListFailed()
+                null
+            }
+        }
+
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.let {
-            albumId = it.getLong(ALBUM_ID_KEY)
-        }
         initUi()
     }
 
-    private fun initUi() {
-        setToolbarText(albumId.toString())
-        setPicturesRecyclerView()
-        getPicturesList()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
-    private fun setToolbarText(toolbarString: String?) {
-        val title: String = toolbarString?: getString(R.string.unknown)
+    private fun initUi() {
+        if (imageListFragmentViewModel != null) {
+            (imageListFragmentViewModel as ImagesListFragmentViewModel)
+                .albumId.observe(viewLifecycleOwner, { albumIdLong ->
+                    setToolbarText(albumIdLong)
+                    if (albumIdLong != null) {
+                        setPicturesRecyclerView()
+                    } else {
+                        onGetPicturesListFailed()
+                    }
+                })
+        } else {
+            onGetPicturesListFailed()
+        }
+    }
+
+    private fun setToolbarText(albumIdLong: Long?) {
+        val toolbarString: String? = albumIdLong?.toString()
+        val title: String = toolbarString ?: getString(R.string.unknown)
         val albumTitle: String = getString(R.string.album) + title
         (activity as ActionBarTitleSetter).setTitle(albumTitle)
     }
@@ -61,28 +97,18 @@ class ImagesListFragment : Fragment() {
     private fun setPicturesRecyclerView() {
         binding.imagesListRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.imagesListRecyclerView.adapter = picturesRecyclerViewAdapter
+        getPicturesList()
     }
 
     private fun getPicturesList() {
         binding.imagesListProgressBar.visible()
-        if (albumId != null) {
-            repository.getPicturesFromAlbumId(albumId as Long)
-            repository.picturesListLiveData?.observe(viewLifecycleOwner, { picturesList ->
-                if (!picturesList.isNullOrEmpty()) {
-                    if (isListReceivedAlbumCurrentAlbum(picturesList)) {
-                        onPicturesListReceived(picturesList)
-                    }
-                } else {
-                    onGetPicturesListFailed()
-                }
-            })
-        } else {
-            onGetPicturesListFailed()
-        }
-    }
-
-    private fun isListReceivedAlbumCurrentAlbum(picturesList: List<PictureModel>): Boolean {
-        return picturesList.firstOrNull()?.pictureAlbumId == albumId
+        imageListFragmentViewModel?.picturesList?.observe(viewLifecycleOwner, { picturesList ->
+            if (picturesList.isNotEmpty()) {
+                onPicturesListReceived(picturesList)
+            } else {
+                onGetPicturesListFailed()
+            }
+        })
     }
 
     private fun onPicturesListReceived(picturesList: List<PictureModel>) {
