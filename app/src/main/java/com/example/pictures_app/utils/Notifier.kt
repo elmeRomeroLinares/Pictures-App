@@ -3,8 +3,12 @@ package com.example.pictures_app.utils
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.pictures_app.R
 
 object Notifier {
@@ -25,5 +29,21 @@ object Notifier {
                 notificationManager.createNotificationChannel(mChannel)
             }
         }
+    }
+
+    fun postNotification(id: Long, context: Context, intent: PendingIntent) {
+        val builder = NotificationCompat.Builder(context, channelId)
+        builder.setContentTitle(context.getString(R.string.deepLinkNotificationTitle))
+            .setSmallIcon(R.drawable.ic_article)
+        val text = context.getString(R.string.detail)
+        val notification = builder.setContentText(text)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(intent)
+            .setAutoCancel(true)
+            .build()
+        val notificationManager = NotificationManagerCompat.from(context)
+        // Remove prior notifications; only allow one at a time to edit the latest item
+        notificationManager.cancelAll()
+        notificationManager.notify(id.toInt(), notification)
     }
 }

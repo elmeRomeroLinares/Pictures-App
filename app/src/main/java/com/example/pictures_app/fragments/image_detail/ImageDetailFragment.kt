@@ -4,9 +4,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.*
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.pictures_app.ELEMENT_ID
 import com.example.pictures_app.R
 import com.example.pictures_app.databinding.FragmentImageDetailBinding
 import com.example.pictures_app.model.PictureModel
@@ -37,6 +40,8 @@ class ImageDetailFragment : Fragment() {
         imageDetailFragmentViewModel =
             ViewModelProvider(this, imageDetailFragmentViewModelFactory)
                 .get(ImageDetailFragmentViewModel::class.java)
+
+        createNotification()
 
         return root
     }
@@ -124,5 +129,16 @@ class ImageDetailFragment : Fragment() {
 
     private fun unableToShareContent() {
         activity?.toast(getString(R.string.unable_to_share))
+    }
+
+    private fun createNotification() {
+        val arg: Bundle = safeArguments.toBundle()
+        val pendingIntent = findNavController()
+            .createDeepLink()
+            .setDestination(R.id.imageDetailFragment)
+            .setArguments(arg)
+            .createPendingIntent()
+
+        Notifier.postNotification((safeArguments.elementId as String).toLong(), requireContext(), pendingIntent)
     }
 }

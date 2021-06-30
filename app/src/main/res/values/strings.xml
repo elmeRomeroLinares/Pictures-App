@@ -25,4 +25,7 @@
     <string name="share_by_dynamic_link">Share Dynamic Link</string>
     <string name="defaultChannel">PicturesApp default channel</string>
     <string name="notificationDescription">Notification from PicturesApp</string>
+    <string name="deepLinkNotificationTitle">Deep Link</string>
+    <string name="detail">Detail</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>

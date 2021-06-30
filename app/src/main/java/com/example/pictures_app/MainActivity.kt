@@ -20,9 +20,12 @@ import androidx.navigation.ui.*
 import com.example.pictures_app.databinding.ActivityMainBinding
 import com.example.pictures_app.fragments.albums.AlbumsViewPagerFragmentDirections
 import com.example.pictures_app.utils.ActionBarTitleSetter
+import com.example.pictures_app.utils.Notifier
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+
+const val ELEMENT_ID = "elementId"
 
 class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
@@ -48,12 +51,9 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
         setSupportActionBar(activityMainBinding.appBarMain.toolbar)
 
-        initUi()
-    }
+        Notifier.init(this)
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+        initUi()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
     private fun navigateToDeepLinkDestination(deepLinkUri: Uri?) {
         val lastPathSegment = deepLinkUri?.lastPathSegment
         val queryParameters = deepLinkUri?.getQueryParameter("id")
-        val bundle = bundleOf("elementId" to queryParameters)
+        val bundle = bundleOf(ELEMENT_ID to queryParameters)
         if (lastPathSegment == "posts") {
             navController.navigate(
                 R.id.postDetailFragment,
