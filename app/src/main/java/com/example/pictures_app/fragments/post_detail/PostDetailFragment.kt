@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.pictures_app.R
 import com.example.pictures_app.databinding.FragmentPostDetailBinding
 import com.example.pictures_app.model.PostModel
+import com.example.pictures_app.utils.Notifier
 import com.example.pictures_app.utils.toast
 
 class PostDetailFragment : Fragment() {
@@ -34,6 +36,8 @@ class PostDetailFragment : Fragment() {
         postDetailFragmentViewModel =
             ViewModelProvider(this, postDetailFragmentViewModelFactory)
                 .get(PostDetailFragmentViewModel::class.java)
+
+        createNotification()
 
         return root
     }
@@ -65,5 +69,16 @@ class PostDetailFragment : Fragment() {
 
     private fun onGetPostFailed() {
         activity?.toast(getString(R.string.error_message))
+    }
+
+    private fun createNotification() {
+        val arg: Bundle = safeArguments.toBundle()
+        val pendingIntent = findNavController()
+            .createDeepLink()
+            .setDestination(R.id.postDetailFragment)
+            .setArguments(arg)
+            .createPendingIntent()
+
+        Notifier.postNotification((safeArguments.elementId as String).toLong(), requireContext(), pendingIntent)
     }
 }

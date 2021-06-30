@@ -1,6 +1,5 @@
 package com.example.pictures_app.fragments.posts
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.pictures_app.PicturesApplication

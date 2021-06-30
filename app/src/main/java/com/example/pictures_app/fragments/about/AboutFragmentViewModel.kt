@@ -1,6 +1,5 @@
 package com.example.pictures_app.fragments.about
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.pictures_app.utils.SharedPreferencesManager

@@ -1,15 +1,11 @@
 package com.example.pictures_app
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -18,14 +14,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.example.pictures_app.databinding.ActivityMainBinding
-import com.example.pictures_app.fragments.albums.AlbumsViewPagerFragmentDirections
 import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.Notifier
+import com.example.pictures_app.utils.toast
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
-
-const val ELEMENT_ID = "elementId"
 
 class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
@@ -109,19 +103,19 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
                     }
                 }
             }
-            .addOnFailureListener(this) {e -> Log.w(TAG, "getDynamicLink:onFailure", e)}
+            .addOnFailureListener(this) {this.toast(getString(R.string.error_message))}
     }
 
     private fun navigateToDeepLinkDestination(deepLinkUri: Uri?) {
         val lastPathSegment = deepLinkUri?.lastPathSegment
-        val queryParameters = deepLinkUri?.getQueryParameter("id")
+        val queryParameters = deepLinkUri?.getQueryParameter(KEY_ID)
         val bundle = bundleOf(ELEMENT_ID to queryParameters)
-        if (lastPathSegment == "posts") {
+        if (lastPathSegment == POST_KEY) {
             navController.navigate(
                 R.id.postDetailFragment,
                 bundle
             )
-        } else if (lastPathSegment == "photos") {
+        } else if (lastPathSegment == PHOTOS_KEY) {
             navController.navigate(
                 R.id.imageDetailFragment,
                 bundle
@@ -131,5 +125,12 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
     override fun setTitle(title: String) {
         supportActionBar?.title = title
+    }
+
+    companion object {
+        const val ELEMENT_ID = "elementId"
+        const val KEY_ID = "id"
+        const val POST_KEY = "posts"
+        const val PHOTOS_KEY = "photos"
     }
 }
