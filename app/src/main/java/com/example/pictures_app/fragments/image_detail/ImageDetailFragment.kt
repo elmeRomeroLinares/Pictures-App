@@ -56,20 +56,6 @@ class ImageDetailFragment : Fragment() {
         _binding = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.detail_fragment_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.share_with_dynamic_link -> {
-                imageDetailFragmentViewModel.sharePictureDetailByDynamicLink()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun initUi() {
         imageDetailFragmentViewModel.picture.observe(viewLifecycleOwner, { picture ->
             if (picture != null) {

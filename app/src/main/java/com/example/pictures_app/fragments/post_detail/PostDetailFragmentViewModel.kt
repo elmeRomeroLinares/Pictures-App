@@ -30,7 +30,4 @@ class PostDetailFragmentViewModel(postIdString: String?) : ViewModel() {
             post.postValue(null)
         }
     }
-
-    fun sharePostDetailByDynamicLink() {
-    }
 }

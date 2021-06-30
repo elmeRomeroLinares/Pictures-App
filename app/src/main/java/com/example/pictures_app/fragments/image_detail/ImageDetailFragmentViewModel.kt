@@ -41,14 +41,4 @@ class ImageDetailFragmentViewModel(pictureIdString: String?) : ViewModel() {
             picture.postValue(null)
         }
     }
-
-    fun sharePictureDetailByDynamicLink() {
-        val dynamicLink = Firebase.dynamicLinks.dynamicLink {
-
-            domainUriPrefix = "https://picturesnerderyelmer.page.link"
-            androidParameters {  }
-        }
-
-        val dynamicLinkUri = dynamicLink.uri
-    }
 }

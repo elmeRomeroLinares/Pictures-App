@@ -48,20 +48,6 @@ class PostDetailFragment : Fragment() {
         _binding = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.detail_fragment_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.share_with_dynamic_link -> {
-                postDetailFragmentViewModel.sharePostDetailByDynamicLink()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun initUi() {
         postDetailFragmentViewModel.post.observe(viewLifecycleOwner, { post->
             if (post != null) {
