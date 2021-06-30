@@ -23,4 +23,6 @@
     <string name="about_pictures_app">This App was Developed as Part of Ravn Nerdery Program</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="share_by_dynamic_link">Share Dynamic Link</string>
+    <string name="defaultChannel">PicturesApp default channel</string>
+    <string name="notificationDescription">Notification from PicturesApp</string>
 </resources>
