@@ -37,8 +37,6 @@ class PostDetailFragment : Fragment() {
             ViewModelProvider(this, postDetailFragmentViewModelFactory)
                 .get(PostDetailFragmentViewModel::class.java)
 
-        createNotification()
-
         return root
     }
 
@@ -69,16 +67,5 @@ class PostDetailFragment : Fragment() {
 
     private fun onGetPostFailed() {
         activity?.toast(getString(R.string.error_message))
-    }
-
-    private fun createNotification() {
-        val arg: Bundle = safeArguments.toBundle()
-        val pendingIntent = findNavController()
-            .createDeepLink()
-            .setDestination(R.id.postDetailFragment)
-            .setArguments(arg)
-            .createPendingIntent()
-
-        Notifier.postNotification((safeArguments.elementId as String).toLong(), requireContext(), pendingIntent)
     }
 }

@@ -119,26 +119,18 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
     }
 
     private fun navigateToDeepLinkDestination(deepLinkUri: Uri?) {
-        val lastPathSegment = deepLinkUri?.lastPathSegment
-        val queryParameters = deepLinkUri?.getQueryParameter(KEY_ID)
-        val bundle = bundleOf(ELEMENT_ID to queryParameters)
-        if (lastPathSegment == POST_KEY) {
-            navController.navigate(
-                R.id.postDetailFragment,
-                bundle
-            )
-        } else if (lastPathSegment == PHOTOS_KEY) {
-            navController.navigate(
-                R.id.imageDetailFragment,
-                bundle
-            )
+        deepLinkUri?.let {
+            navController.navigate(deepLinkUri)
         }
     }
 
     private fun openFromFirebaseNotification() {
         intent?.getStringExtra(DESTINATION)?.let {
             val destinationUri = Uri.parse(it)
-            navController.navigate(destinationUri)
+            if (mainActivityViewModel.dynamicLinkData.value != destinationUri) {
+                navigateToDeepLinkDestination(destinationUri)
+                mainActivityViewModel.dynamicLinkData.postValue(destinationUri)
+            }
         }
     }
 
@@ -166,10 +158,6 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
     }
 
     companion object {
-        const val ELEMENT_ID = "elementId"
-        const val KEY_ID = "id"
-        const val POST_KEY = "posts"
-        const val PHOTOS_KEY = "photos"
         const val DEVELOPMENT = "dev"
         const val DESTINATION = "destination"
     }
