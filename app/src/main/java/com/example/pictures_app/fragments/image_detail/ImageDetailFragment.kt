@@ -41,7 +41,7 @@ class ImageDetailFragment : Fragment() {
             ViewModelProvider(this, imageDetailFragmentViewModelFactory)
                 .get(ImageDetailFragmentViewModel::class.java)
 
-        createNotification()
+//        createNotification()
 
         return root
     }
@@ -117,7 +117,7 @@ class ImageDetailFragment : Fragment() {
         activity?.toast(getString(R.string.unable_to_share))
     }
 
-    private fun createNotification() {
+    /*private fun createNotification() {
         val arg: Bundle = safeArguments.toBundle()
         val pendingIntent = findNavController()
             .createDeepLink()
@@ -126,5 +126,5 @@ class ImageDetailFragment : Fragment() {
             .createPendingIntent()
 
         Notifier.postNotification((safeArguments.elementId as String).toLong(), requireContext(), pendingIntent)
-    }
+    }*/
 }

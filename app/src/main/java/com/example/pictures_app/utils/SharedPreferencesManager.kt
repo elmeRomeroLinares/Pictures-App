@@ -8,6 +8,8 @@ const val APP_SETTINGS = "APP_SETTINGS"
 
 const val SWITCH_DARK_MODE_STATE = "SWITCH_STATE"
 
+const val FIREBASE_TOKEN = "FIREBASE_TOKEN"
+
 object SharedPreferencesManager {
 
     fun persistDarkThemeSwitchStateValue(boolean: Boolean) {
@@ -19,6 +21,12 @@ object SharedPreferencesManager {
     fun getSwitchStateValue(): Boolean {
         return PicturesApplication.appSharedPreferences
             .getBoolean(SWITCH_DARK_MODE_STATE, false)
+    }
+
+    fun persistFirebaseToken(token: String) {
+        PicturesApplication.appSharedPreferences.edit()
+            .putString(FIREBASE_TOKEN, token)
+            .apply()
     }
 
 }

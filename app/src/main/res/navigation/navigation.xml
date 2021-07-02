@@ -18,11 +18,14 @@
     <fragment
         android:id="@+id/imageDetailFragment"
         android:name="com.example.pictures_app.fragments.image_detail.ImageDetailFragment"
-        tools:layout="@layout/fragment_image_detail" >
+        tools:layout="@layout/fragment_image_detail">
         <argument
             android:name="elementId"
             app:argType="string"
             app:nullable="true" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://picturesnerderyelmer.page.link/pictureFromJsonPlacholder/?elementId={elementId}" />
     </fragment>
 
     <fragment
@@ -42,12 +45,15 @@
         <argument
             android:name="elementId"
             app:argType="string"
-            app:nullable="true"/>
+            app:nullable="true" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="https://picturesnerderyelmer.page.link/postFromJsonPlacholder/?elementId={elementId}" />
     </fragment>
 
     <fragment
         android:id="@+id/aboutPicturesAppFragment"
         android:name="com.example.pictures_app.fragments.about.AboutPicturesAppFragment"
         android:label="About Pictures App"
-        tools:layout="@layout/fragment_about_pictures_app" />
+        tools:layout="@layout/fragment_about_pictures_app"/>
 </navigation>

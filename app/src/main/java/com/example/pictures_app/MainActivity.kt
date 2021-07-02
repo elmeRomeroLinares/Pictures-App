@@ -3,23 +3,28 @@ package com.example.pictures_app
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navArgs
+import androidx.navigation.navOptions
 import androidx.navigation.ui.*
 import com.example.pictures_app.databinding.ActivityMainBinding
-import com.example.pictures_app.utils.ActionBarTitleSetter
-import com.example.pictures_app.utils.Notifier
-import com.example.pictures_app.utils.toast
+import com.example.pictures_app.utils.*
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
@@ -38,14 +43,23 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
         mainActivityViewModel = ViewModelProvider(this)
             .get(MainActivityViewModel::class.java)
 
-        openFromFirebaseDynamicLink()
-
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
+
+        val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+
+        openFromFirebaseDynamicLink()
+
+        openFromFirebaseNotification()
 
         setSupportActionBar(activityMainBinding.appBarMain.toolbar)
 
         Notifier.init(this)
+
+        getFirebaseNotificationToken()
+
+        subscribeToFirebaseTopic()
 
         initUi()
     }
@@ -73,8 +87,6 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
     private fun initUi() {
         val drawerLayout: DrawerLayout = activityMainBinding.drawerLayout
         val navView: NavigationView = activityMainBinding.navView
-        val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
 
         setAppBarConfiguration(drawerLayout, navView)
     }
@@ -123,8 +135,34 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
         }
     }
 
+    private fun openFromFirebaseNotification() {
+        intent?.getStringExtra(DESTINATION)?.let {
+            val destinationUri = Uri.parse(it)
+            navController.navigate(destinationUri)
+        }
+    }
+
+    private fun getFirebaseNotificationToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                showMessage(getString(R.string.error_message))
+                return@OnCompleteListener
+            }
+
+            SharedPreferencesManager.persistFirebaseToken(task.result)
+        })
+    }
+
+    private fun subscribeToFirebaseTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic(DEVELOPMENT)
+    }
+
     override fun setTitle(title: String) {
         supportActionBar?.title = title
+    }
+
+    private fun showMessage(message: String) {
+        this.toast(message)
     }
 
     companion object {
@@ -132,5 +170,7 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
         const val KEY_ID = "id"
         const val POST_KEY = "posts"
         const val PHOTOS_KEY = "photos"
+        const val DEVELOPMENT = "dev"
+        const val DESTINATION = "destination"
     }
 }
