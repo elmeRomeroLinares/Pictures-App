@@ -142,6 +142,7 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
             }
 
             SharedPreferencesManager.persistFirebaseToken(task.result)
+            Log.d("MainActivityToken", task.result)
         })
     }
 
