@@ -3,16 +3,17 @@ package com.example.pictures_app.fragments.image_detail
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.model.PictureModel
+import com.example.pictures_app.repository.PicturesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ImageDetailFragmentViewModel(pictureIdString: String?) : ViewModel() {
+class ImageDetailFragmentViewModel(
+    private val pictureIdString: String?,
+    private val repository: PicturesRepository
+) : ViewModel() {
 
-    private var pictureId: String? = pictureIdString
-    private val repository = PicturesApplication.picturesRepository
     var bitmap: Bitmap? = null
     val picture: MutableLiveData<PictureModel> = MutableLiveData()
 
@@ -26,10 +27,10 @@ class ImageDetailFragmentViewModel(pictureIdString: String?) : ViewModel() {
     }
 
     private fun getPicture() {
-        if (pictureId != null) {
+        if (pictureIdString != null) {
             GlobalScope.launch(Dispatchers.IO) {
                 picture.postValue(
-                    repository.getPictureById((pictureId as String).toLong())
+                    repository.getPictureById(pictureIdString.toLong())
                 )
             }
         } else {

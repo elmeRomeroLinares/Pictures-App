@@ -3,9 +3,11 @@ package com.example.pictures_app.fragments.post_detail
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.databinding.FragmentPostDetailBinding
 import com.example.pictures_app.model.PostModel
@@ -14,7 +16,9 @@ import com.example.pictures_app.utils.toast
 
 class PostDetailFragment : Fragment() {
 
-    private lateinit var postDetailFragmentViewModel: PostDetailFragmentViewModel
+    private val postDetailFragmentViewModel by viewModels<PostDetailFragmentViewModel> {
+        PostDetailFragmentViewModelFactory(safeArguments.elementId, PicturesApplication.picturesRepository)
+    }
     private lateinit var postDetailFragmentViewModelFactory: PostDetailFragmentViewModelFactory
 
     private var _binding: FragmentPostDetailBinding? = null
@@ -30,12 +34,6 @@ class PostDetailFragment : Fragment() {
         val root: View = binding.root
 
         setHasOptionsMenu(true)
-
-        postDetailFragmentViewModelFactory =
-            PostDetailFragmentViewModelFactory(safeArguments.elementId)
-        postDetailFragmentViewModel =
-            ViewModelProvider(this, postDetailFragmentViewModelFactory)
-                .get(PostDetailFragmentViewModel::class.java)
 
         return root
     }

@@ -2,123 +2,136 @@ package com.example.pictures_app.repository
 
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.lifecycle.MutableLiveData
 import com.example.pictures_app.PicturesApplication
-import com.example.pictures_app.database.dao.AlbumsDao
-import com.example.pictures_app.database.dao.PicturesDao
-import com.example.pictures_app.database.dao.PostsDao
+import com.example.pictures_app.data.PicturesAlbumsPostsDataSource
+import com.example.pictures_app.database.LocalDataSource
+import com.example.pictures_app.database.LocalDataSourceImplementation
 import com.example.pictures_app.model.AlbumPicturesModel
 import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.model.PostModel
 import com.example.pictures_app.model.Success
 import com.example.pictures_app.networking.NetworkStatusChecker
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.example.pictures_app.networking.NetworkStatusCheckerInterface
+import com.example.pictures_app.networking.RemoteDataSourceImplementation
 
 private const val USER_ID: Long = 1
 
 class PicturesRepositoryImplementation(
-    private val picturesDao: PicturesDao,
-    private val albumsDao: AlbumsDao,
-    private val postsDao: PostsDao,
-    private val context: Context
+    private val localDataSource: LocalDataSource,
+    private val remoteDataSource: PicturesAlbumsPostsDataSource,
+    private val networkStatusChecker: NetworkStatusCheckerInterface
 ) : PicturesRepository {
 
-    private val remoteApi = PicturesApplication.remoteApi
-    private val networkStatusChecker by lazy {
-        NetworkStatusChecker(context.getSystemService(ConnectivityManager::class.java))
-    }
-    override val picturesListLiveData: MutableLiveData<List<PictureModel>> = MutableLiveData()
-    override val postsListLiveData: MutableLiveData<List<PostModel>> = MutableLiveData()
-
     override suspend fun getAllAlbums(): List<AlbumPicturesModel>? {
-        if (networkStatusChecker.hasInternetConnection()) {
-            val result = remoteApi.remoteApiGetAlbums(USER_ID)
-            return if (result is Success) {
+        return if (networkStatusChecker.hasInternetConnection()) {
+            var result = remoteDataSource.getAlbums(USER_ID)
+            if (result is Success) {
                 onServerAlbumsListReceived(result.data)
+            } else {
+                result = localDataSource.getAlbums(USER_ID)
+                if (result is Success) {
+                    result.data
+                } else {
+                    null
+                }
+            }
+        } else {
+            val result = localDataSource.getAlbums(USER_ID)
+            if (result is Success) {
+                result.data
             } else {
                 null
             }
-        } else if (getAllLocalAlbums().isEmpty()) {
-            return null
-        } else {
-            return getAllLocalAlbums()
         }
     }
-
-    override suspend fun getPictureById(id: Long): PictureModel =
-        picturesDao.getLocalPictureById(id)
-
-    override suspend fun getPicturesFromAlbumId(albumId: Long): List<PictureModel> {
-        if (networkStatusChecker.hasInternetConnection()) {
-            val result = remoteApi.remoteApiGetAlbumPhotos(albumId = albumId)
-            return if (result is Success) {
-                onServerPicturesListReceived(result.data)
-            } else {
-                emptyList()
-            }
-        } else if (getAllLocalPicturesByAlbumId(albumId).isEmpty()) {
-            return emptyList()
-        } else {
-            return getAllLocalPicturesByAlbumId(albumId)
-        }
-    }
-
-    override suspend fun getUserPosts(): List<PostModel>? {
-        if (networkStatusChecker.hasInternetConnection()) {
-            val result = remoteApi.remoteApiGetPosts(USER_ID)
-            if (result is Success) {
-                return onServerPostsListReceived(result.data)
-            } else {
-                return null
-            }
-        } else if (getAllLocalPosts().isEmpty()) {
-            return null
-        } else {
-            return getAllLocalPosts()
-        }
-    }
-
-    override suspend fun getPostById(id: Long): PostModel =
-        postsDao.getLocalPostById(id)
-
-    private suspend fun getAllLocalAlbums(): List<AlbumPicturesModel> = albumsDao.getLocalAlbums()
-
-    private suspend fun addAlbumsToDataBase(albums: List<AlbumPicturesModel>) =
-        albumsDao.addLocalAlbums(albums)
 
     private suspend fun onServerAlbumsListReceived(
         albumsList: List<AlbumPicturesModel>
     ): List<AlbumPicturesModel> {
         val choppedAlbumsList = albumsList.dropLast(albumsList.size - 2)
-        addAlbumsToDataBase(choppedAlbumsList)
+        localDataSource.addAlbumsToDataBase(choppedAlbumsList)
         return choppedAlbumsList
     }
 
-    private suspend fun getAllLocalPicturesByAlbumId(albumId: Long): List<PictureModel> {
-        val picturesFromAlbum = albumsDao.getPhotosByAlbum(albumId).pictures
-        return picturesFromAlbum?: emptyList()
+    override suspend fun getPicturesFromAlbumId(albumId: Long): List<PictureModel> {
+        return if (networkStatusChecker.hasInternetConnection()) {
+            var result = remoteDataSource.getAlbumPhotos(albumId = albumId)
+            if (result is Success) {
+                onServerPicturesListReceived(result.data)
+            } else {
+                result = localDataSource.getAlbumPhotos(albumId = albumId)
+                if (result is Success) {
+                    result.data
+                } else {
+                    emptyList()
+                }
+            }
+        } else {
+            val result = localDataSource.getAlbumPhotos(albumId = albumId)
+            if (result is Success) {
+                result.data
+            } else {
+                emptyList()
+            }
+        }
     }
-
-    private suspend fun addPicturesToDataBase(pictures: List<PictureModel>) =
-        picturesDao.addLocalPictures(pictures)
 
     private suspend fun onServerPicturesListReceived(
         picturesList: List<PictureModel>
     ): List<PictureModel> {
-        val choppedPicturesList = picturesList.dropLast(picturesList.size - 25)
-        addPicturesToDataBase(choppedPicturesList)
-        return choppedPicturesList
+        return if (picturesList.size > 25) {
+            val choppedPicturesList = picturesList.dropLast(picturesList.size - 25)
+            localDataSource.addPicturesToDataBase(choppedPicturesList)
+            choppedPicturesList
+        } else {
+            localDataSource.addPicturesToDataBase(picturesList)
+            picturesList
+        }
     }
 
-    private suspend fun getAllLocalPosts(): List<PostModel> = postsDao.getLocalPosts()
-
-    private suspend fun addPostsToDataBase(postsList: List<PostModel>) =
-        postsDao.addLocalPosts(postsList)
+    override suspend fun getUserPosts(): List<PostModel>? {
+        return if (networkStatusChecker.hasInternetConnection()) {
+            var result = remoteDataSource.getPosts(USER_ID)
+            if (result is Success) {
+                onServerPostsListReceived(result.data)
+            } else {
+                result = localDataSource.getPosts(USER_ID)
+                if (result is Success) {
+                    result.data
+                } else {
+                    null
+                }
+            }
+        } else {
+            val result = remoteDataSource.getPosts(USER_ID)
+            if (result is Success) {
+                result.data
+            } else {
+                null
+            }
+        }
+    }
 
     private suspend fun onServerPostsListReceived(postsList: List<PostModel>): List<PostModel> {
-        addPostsToDataBase(postsList)
+        localDataSource.addPostsToDataBase(postsList)
         return postsList
+    }
+
+    override suspend fun getPictureById(id: Long): PictureModel? {
+        val picture = localDataSource.getPictureById(id)
+        return if (picture is Success) {
+            picture.data
+        } else {
+            null
+        }
+    }
+
+    override suspend fun getPostById(id: Long): PostModel? {
+        val post = localDataSource.getPostById(id)
+        return if (post is Success) {
+            post.data
+        } else {
+            null
+        }
     }
 }

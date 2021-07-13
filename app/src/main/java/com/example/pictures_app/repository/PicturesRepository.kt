@@ -7,17 +7,13 @@ import com.example.pictures_app.model.PostModel
 
 interface PicturesRepository {
 
-    val picturesListLiveData: MutableLiveData<List<PictureModel>>?
-
-    val postsListLiveData: MutableLiveData<List<PostModel>>
-
     suspend fun getAllAlbums(): List<AlbumPicturesModel>?
 
-    suspend fun getPictureById(id: Long): PictureModel
+    suspend fun getPictureById(id: Long): PictureModel?
 
     suspend fun getPicturesFromAlbumId(albumId: Long): List<PictureModel>
 
     suspend fun getUserPosts(): List<PostModel>?
 
-    suspend fun getPostById(id: Long): PostModel
+    suspend fun getPostById(id: Long): PostModel?
 }

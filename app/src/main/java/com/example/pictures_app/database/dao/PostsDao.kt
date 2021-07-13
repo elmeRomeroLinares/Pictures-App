@@ -10,11 +10,11 @@ import com.example.pictures_app.model.PostModel
 interface PostsDao {
 
     @Query("SELECT * FROM posts_table")
-    suspend fun getLocalPosts(): List<PostModel>
+    suspend fun getLocalPosts(): List<PostModel>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addLocalPosts(postsToAdd: List<PostModel>)
 
     @Query("SELECT * FROM posts_table WHERE postId = :id")
-    suspend fun getLocalPostById(id: Long): PostModel
+    suspend fun getLocalPostById(id: Long): PostModel?
 }

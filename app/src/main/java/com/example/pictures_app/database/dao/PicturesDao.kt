@@ -16,5 +16,5 @@ interface PicturesDao {
     suspend fun addLocalPictures(picturesToAdd: List<PictureModel>)
 
     @Query("SELECT * FROM pictures_table WHERE pictureId = :id")
-    suspend fun getLocalPictureById(id: Long): PictureModel
+    suspend fun getLocalPictureById(id: Long): PictureModel?
 }

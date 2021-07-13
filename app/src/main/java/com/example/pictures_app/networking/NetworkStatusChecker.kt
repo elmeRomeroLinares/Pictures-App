@@ -3,9 +3,11 @@ package com.example.pictures_app.networking
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
-class NetworkStatusChecker(private val connectivityManager: ConnectivityManager?) {
+class NetworkStatusChecker(
+    private val connectivityManager: ConnectivityManager?
+) : NetworkStatusCheckerInterface {
 
-    fun hasInternetConnection() : Boolean {
+    override fun hasInternetConnection() : Boolean {
         val network = connectivityManager?.activeNetwork ?: return false
         val capabilities  = connectivityManager.getNetworkCapabilities(network) ?: return false
 

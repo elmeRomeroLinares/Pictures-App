@@ -4,14 +4,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.model.PostModel
+import com.example.pictures_app.repository.PicturesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class PostDetailFragmentViewModel(postIdString: String?) : ViewModel() {
+class PostDetailFragmentViewModel(
+    private val postIdString: String?,
+    private val repository: PicturesRepository
+) : ViewModel() {
 
-    private var postId: String? = postIdString
-    private val repository = PicturesApplication.picturesRepository
     val post: MutableLiveData<PostModel> = MutableLiveData()
 
     init {
@@ -19,13 +21,12 @@ class PostDetailFragmentViewModel(postIdString: String?) : ViewModel() {
     }
 
     private fun getPost() {
-        if (postId != null) {
+        if (postIdString != null) {
             GlobalScope.launch(Dispatchers.IO) {
                 post.postValue(
-                    repository.getPostById((postId as String).toLong())
+                    repository.getPostById((postIdString as String).toLong())
                 )
             }
-
         } else {
             post.postValue(null)
         }

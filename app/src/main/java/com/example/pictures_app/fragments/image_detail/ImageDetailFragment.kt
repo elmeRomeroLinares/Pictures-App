@@ -7,24 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.databinding.FragmentImageDetailBinding
+import com.example.pictures_app.fragments.image_list.ImagesListFragmentViewModelFactory
 import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.utils.*
 import com.example.pictures_app.utils.SharePictureUtil.getSharePictureIntent
 
 class ImageDetailFragment : Fragment() {
 
-    private lateinit var imageDetailFragmentViewModel: ImageDetailFragmentViewModel
-    private lateinit var imageDetailFragmentViewModelFactory: ImageDetailFragmentViewModelFactory
+    private val safeArguments: ImageDetailFragmentArgs by navArgs()
+
+    private val imageDetailFragmentViewModel by viewModels<ImageDetailFragmentViewModel> {
+        ImageDetailFragmentViewModelFactory(safeArguments.elementId, PicturesApplication.picturesRepository)
+    }
 
     private var _binding: FragmentImageDetailBinding? = null
     private val binding get() = _binding!!
-
-    private val safeArguments: ImageDetailFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,12 +38,6 @@ class ImageDetailFragment : Fragment() {
         val root: View = binding.root
 
         setHasOptionsMenu(true)
-
-        imageDetailFragmentViewModelFactory =
-            ImageDetailFragmentViewModelFactory(safeArguments.elementId)
-        imageDetailFragmentViewModel =
-            ViewModelProvider(this, imageDetailFragmentViewModelFactory)
-                .get(ImageDetailFragmentViewModel::class.java)
 
         return root
     }

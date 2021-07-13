@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         openFromFirebaseDynamicLink()
+        openFromFirebaseNotification()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

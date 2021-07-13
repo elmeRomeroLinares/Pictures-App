@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.pictures_app.database.PicturesAppDatabase
-import com.example.pictures_app.networking.RemoteApi
+import com.example.pictures_app.networking.RemoteDataSourceImplementation
 import com.example.pictures_app.networking.RemoteApiService
 import com.example.pictures_app.networking.buildApiService
 import com.example.pictures_app.repository.PicturesRepository
@@ -19,27 +19,15 @@ class PicturesApplication : Application() {
 
     companion object {
         private lateinit var instance: PicturesApplication
-        private lateinit var apiService: RemoteApiService
-        lateinit var remoteApi:RemoteApi
-        private lateinit var database: PicturesAppDatabase
-        lateinit var picturesRepository: PicturesRepository
         lateinit var appSharedPreferences: SharedPreferences
+        lateinit var picturesRepository: PicturesRepository
     }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
 
-        apiService = buildApiService()
-        remoteApi = RemoteApi(apiService)
-
-        database = PicturesAppDatabase.buildDatabase(instance)
-        picturesRepository = PicturesRepositoryImplementation(
-            database.picturesDao(),
-            database.albumsDao(),
-            database.postsDao(),
-            instance
-        )
+        picturesRepository =  ServiceLocator.providePicturesRepository(this)
 
         appSharedPreferences = instance.getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE)
         setAppLightDarkTheme()

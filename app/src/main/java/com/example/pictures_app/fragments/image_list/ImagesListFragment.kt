@@ -10,6 +10,7 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.adapters.PicturesRecyclerViewAdapter
 import com.example.pictures_app.databinding.FragmentImagesListBinding
@@ -42,18 +43,15 @@ class ImagesListFragment : Fragment() {
         val root: View = binding.root
 
         arguments?.let {
-            imagesListFragmentViewModelFactory =
-                ImagesListFragmentViewModelFactory(it.getLong(ALBUM_ID_KEY))
+            imagesListFragmentViewModelFactory = ImagesListFragmentViewModelFactory(
+                it.getLong(ALBUM_ID_KEY),
+                PicturesApplication.picturesRepository
+            )
 
-            imageListFragmentViewModel = try {
-                ViewModelProvider(
-                    this,
-                    imagesListFragmentViewModelFactory as ImagesListFragmentViewModelFactory
+            imageListFragmentViewModel = ViewModelProvider(
+                this,
+                imagesListFragmentViewModelFactory as ImagesListFragmentViewModelFactory
                 ).get(ImagesListFragmentViewModel::class.java)
-            } catch (e: Throwable) {
-                onGetPicturesListFailed()
-                null
-            }
         }
 
         return root

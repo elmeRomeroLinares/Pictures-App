@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.R
 import com.example.pictures_app.adapters.AlbumsViewPagerAdapter
 import com.example.pictures_app.databinding.FragmentAlbumsViewPagerBinding
@@ -17,7 +19,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class AlbumsViewPagerFragment : Fragment() {
 
-    private lateinit var albumsViewPagerFragmentViewModel: AlbumsViewPagerFragmentViewModel
+    private val albumsViewPagerFragmentViewModel by viewModels<AlbumsViewPagerFragmentViewModel> {
+        AlbumsViewPagerFragmentViewModelFactory(PicturesApplication.picturesRepository)
+    }
 
     private var _binding: FragmentAlbumsViewPagerBinding? = null
     private val binding get() = _binding!!
@@ -32,9 +36,6 @@ class AlbumsViewPagerFragment : Fragment() {
     ): View {
         _binding = FragmentAlbumsViewPagerBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        albumsViewPagerFragmentViewModel =
-            ViewModelProvider(this).get(AlbumsViewPagerFragmentViewModel::class.java)
 
         return root
     }

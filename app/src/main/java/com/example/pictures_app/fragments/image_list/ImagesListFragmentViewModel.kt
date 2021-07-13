@@ -4,14 +4,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.model.PictureModel
+import com.example.pictures_app.repository.PicturesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ImagesListFragmentViewModel(albumIdLong: Long?) : ViewModel() {
+class ImagesListFragmentViewModel(
+    albumIdLong: Long?,
+    private val repository: PicturesRepository
+) : ViewModel() {
 
     val albumId: MutableLiveData<Long> = MutableLiveData(albumIdLong)
-    private val repository = PicturesApplication.picturesRepository
     val picturesList: MutableLiveData<List<PictureModel>> = MutableLiveData()
 
     init {
