@@ -2,6 +2,7 @@ package com.example.pictures_app
 
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.annotation.VisibleForTesting
 import androidx.room.Room
 import com.example.pictures_app.database.LocalDataSourceImplementation
 import com.example.pictures_app.database.PicturesAppDatabase
@@ -10,12 +11,14 @@ import com.example.pictures_app.networking.RemoteDataSourceImplementation
 import com.example.pictures_app.networking.buildApiService
 import com.example.pictures_app.repository.PicturesRepository
 import com.example.pictures_app.repository.PicturesRepositoryImplementation
+import kotlinx.coroutines.runBlocking
 
 object ServiceLocator {
 
     private var database: PicturesAppDatabase? = null
+    private val lock = Any()
     @Volatile
-    var picturesRepository: PicturesRepository? = null
+    var picturesRepository: PicturesRepository? = null @VisibleForTesting set
 
     fun providePicturesRepository(context: Context): PicturesRepository {
         synchronized(this) {
@@ -53,5 +56,17 @@ object ServiceLocator {
 
     private fun buildNetworkStatusChecker(context: Context): NetworkStatusChecker =
         NetworkStatusChecker(context.getSystemService(ConnectivityManager::class.java))
+
+    @VisibleForTesting
+    fun resetRepository() {
+        synchronized(lock) {
+            database?.apply {
+                clearAllTables()
+                close()
+            }
+            database = null
+            picturesRepository = null
+        }
+    }
 
 }
