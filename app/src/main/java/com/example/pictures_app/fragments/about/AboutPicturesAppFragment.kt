@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.pictures_app.databinding.FragmentAboutPicturesAppBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AboutPicturesAppFragment : Fragment() {
 
     private lateinit var aboutFragmentViewModel: AboutFragmentViewModel

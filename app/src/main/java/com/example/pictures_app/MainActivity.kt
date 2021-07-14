@@ -25,7 +25,9 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ActionBarTitleSetter {
 
     private lateinit var appBarConfiguration: AppBarConfiguration

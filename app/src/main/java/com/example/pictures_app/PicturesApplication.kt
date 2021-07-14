@@ -14,7 +14,9 @@ import com.example.pictures_app.repository.PicturesRepositoryImplementation
 import com.example.pictures_app.utils.APP_SETTINGS
 import com.example.pictures_app.utils.SWITCH_DARK_MODE_STATE
 import com.example.pictures_app.utils.SharedPreferencesManager
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class PicturesApplication : Application() {
 
     companion object {

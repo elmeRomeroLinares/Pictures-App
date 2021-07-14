@@ -13,7 +13,9 @@ import com.example.pictures_app.databinding.FragmentPostDetailBinding
 import com.example.pictures_app.model.PostModel
 import com.example.pictures_app.utils.Notifier
 import com.example.pictures_app.utils.toast
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PostDetailFragment : Fragment() {
 
     private val postDetailFragmentViewModel by viewModels<PostDetailFragmentViewModel> {

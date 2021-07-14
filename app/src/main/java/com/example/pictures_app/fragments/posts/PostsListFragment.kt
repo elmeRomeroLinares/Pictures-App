@@ -17,7 +17,9 @@ import com.example.pictures_app.model.PostModel
 import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PostsListFragment : Fragment() {
 
     private val postsListFragmentViewModel by viewModels<PostsListFragmentViewModel> {

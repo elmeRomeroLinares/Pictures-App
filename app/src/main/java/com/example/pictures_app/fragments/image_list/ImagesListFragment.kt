@@ -20,9 +20,11 @@ import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val ALBUM_ID_KEY = "albumKey"
 
+@AndroidEntryPoint
 class ImagesListFragment : Fragment() {
 
     private var imageListFragmentViewModel: ImagesListFragmentViewModel? = null

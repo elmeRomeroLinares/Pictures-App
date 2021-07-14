@@ -16,7 +16,9 @@ import com.example.pictures_app.model.AlbumPicturesModel
 import com.example.pictures_app.utils.ActionBarTitleSetter
 import com.example.pictures_app.utils.toast
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AlbumsViewPagerFragment : Fragment() {
 
     private val albumsViewPagerFragmentViewModel by viewModels<AlbumsViewPagerFragmentViewModel> {

@@ -17,20 +17,7 @@ const val DATABASE_VERSION = 1
     entities = [PictureModel::class, AlbumPicturesModel::class, PostModel::class],
     version = DATABASE_VERSION
 )
-
 abstract class PicturesAppDatabase : RoomDatabase() {
-
-    companion object {
-        private const val DATABASE_NAME = "PicturesDB"
-
-        fun buildDatabase(context: Context): PicturesAppDatabase {
-            return Room.databaseBuilder(
-                context,
-                PicturesAppDatabase::class.java,
-                DATABASE_NAME
-            ).build()
-        }
-    }
 
     abstract fun picturesDao(): PicturesDao
 

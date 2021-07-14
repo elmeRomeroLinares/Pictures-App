@@ -8,8 +8,11 @@ import com.example.pictures_app.model.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class LocalDataSourceImplementation internal constructor(
+@Singleton
+class LocalDataSourceImplementation @Inject constructor(
     private val picturesDao: PicturesDao,
     private val albumsDao: AlbumsDao,
     private val postsDao: PostsDao,

@@ -18,7 +18,9 @@ import com.example.pictures_app.fragments.image_list.ImagesListFragmentViewModel
 import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.utils.*
 import com.example.pictures_app.utils.SharePictureUtil.getSharePictureIntent
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ImageDetailFragment : Fragment() {
 
     private val safeArguments: ImageDetailFragmentArgs by navArgs()

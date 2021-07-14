@@ -12,11 +12,14 @@ import com.example.pictures_app.networking.buildApiService
 import com.example.pictures_app.repository.PicturesRepository
 import com.example.pictures_app.repository.PicturesRepositoryImplementation
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 object ServiceLocator {
-
-    private var database: PicturesAppDatabase? = null
     private val lock = Any()
+
+    @Inject
+    lateinit var localDataSourceImplementation: LocalDataSourceImplementation
+
     @Volatile
     var picturesRepository: PicturesRepository? = null @VisibleForTesting set
 
@@ -28,7 +31,7 @@ object ServiceLocator {
 
     private fun createPicturesRepository(context: Context): PicturesRepository {
         val newPicturesRepository = PicturesRepositoryImplementation(
-            createLocalDataSource(context),
+            localDataSourceImplementation,
             createRemoteDataSource(),
             buildNetworkStatusChecker(context)
         )
@@ -36,37 +39,10 @@ object ServiceLocator {
         return newPicturesRepository
     }
 
-    private fun createLocalDataSource(context: Context): LocalDataSourceImplementation {
-        val database = database ?: createDataBase(context)
-        return LocalDataSourceImplementation (
-            picturesDao = database.picturesDao(),
-            albumsDao = database.albumsDao(),
-            postsDao = database.postsDao()
-        )
-    }
-
-    private fun createDataBase(context: Context): PicturesAppDatabase {
-        val result = PicturesAppDatabase.buildDatabase(context.applicationContext)
-        database = result
-        return result
-    }
-
     private fun createRemoteDataSource(): RemoteDataSourceImplementation =
         RemoteDataSourceImplementation(buildApiService())
 
     private fun buildNetworkStatusChecker(context: Context): NetworkStatusChecker =
         NetworkStatusChecker(context.getSystemService(ConnectivityManager::class.java))
-
-    @VisibleForTesting
-    fun resetRepository() {
-        synchronized(lock) {
-            database?.apply {
-                clearAllTables()
-                close()
-            }
-            database = null
-            picturesRepository = null
-        }
-    }
 
 }
