@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.pictures_app.database.LocalDataSourceImplementation
 import com.example.pictures_app.database.PicturesAppDatabase
+import com.example.pictures_app.networking.NetworkStatusChecker
 import com.example.pictures_app.networking.RemoteDataSourceImplementation
 import com.example.pictures_app.networking.RemoteApiService
 import com.example.pictures_app.networking.buildApiService
@@ -15,6 +17,7 @@ import com.example.pictures_app.utils.APP_SETTINGS
 import com.example.pictures_app.utils.SWITCH_DARK_MODE_STATE
 import com.example.pictures_app.utils.SharedPreferencesManager
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
 class PicturesApplication : Application() {
@@ -22,14 +25,11 @@ class PicturesApplication : Application() {
     companion object {
         private lateinit var instance: PicturesApplication
         lateinit var appSharedPreferences: SharedPreferences
-        lateinit var picturesRepository: PicturesRepository
     }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-
-        picturesRepository =  ServiceLocator.providePicturesRepository(this)
 
         appSharedPreferences = instance.getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE)
         setAppLightDarkTheme()

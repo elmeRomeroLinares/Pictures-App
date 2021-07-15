@@ -13,10 +13,13 @@ import com.example.pictures_app.model.Success
 import com.example.pictures_app.networking.NetworkStatusChecker
 import com.example.pictures_app.networking.NetworkStatusCheckerInterface
 import com.example.pictures_app.networking.RemoteDataSourceImplementation
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val USER_ID: Long = 1
 
-class PicturesRepositoryImplementation(
+@Singleton
+class PicturesRepositoryImplementation @Inject constructor(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: PicturesAlbumsPostsDataSource,
     private val networkStatusChecker: NetworkStatusCheckerInterface

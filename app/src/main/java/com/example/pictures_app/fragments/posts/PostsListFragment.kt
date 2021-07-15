@@ -22,9 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class PostsListFragment : Fragment() {
 
-    private val postsListFragmentViewModel by viewModels<PostsListFragmentViewModel> {
-        PostsListFragmentViewModelFactory(PicturesApplication.picturesRepository)
-    }
+    private val postsListFragmentViewModel: PostsListFragmentViewModel by viewModels()
     private var _binding: FragmentPostsListBinding? = null
     private val binding get() = _binding!!
 

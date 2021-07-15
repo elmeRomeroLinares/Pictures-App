@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
@@ -21,17 +22,24 @@ import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 private const val ALBUM_ID_KEY = "albumKey"
 
 @AndroidEntryPoint
 class ImagesListFragment : Fragment() {
 
-    private var imageListFragmentViewModel: ImagesListFragmentViewModel? = null
-    private var imagesListFragmentViewModelFactory: ImagesListFragmentViewModelFactory? = null
-
     private var _binding: FragmentImagesListBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var imagesListFragmentViewModelFactory:
+            ImagesListFragmentViewModel.ImagesListViewModelAssistedFactory
+
+    private val imageListFragmentViewModel by viewModels<ImagesListFragmentViewModel> {
+        val albumIdLong: Long? = arguments?.getLong(ALBUM_ID_KEY)
+        ImagesListFragmentViewModel.provideFactory(imagesListFragmentViewModelFactory, albumIdLong)
+    }
 
     private val picturesRecyclerViewAdapter by lazy {
         PicturesRecyclerViewAdapter(::onItemSelected)
@@ -42,21 +50,7 @@ class ImagesListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentImagesListBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        arguments?.let {
-            imagesListFragmentViewModelFactory = ImagesListFragmentViewModelFactory(
-                it.getLong(ALBUM_ID_KEY),
-                PicturesApplication.picturesRepository
-            )
-
-            imageListFragmentViewModel = ViewModelProvider(
-                this,
-                imagesListFragmentViewModelFactory as ImagesListFragmentViewModelFactory
-                ).get(ImagesListFragmentViewModel::class.java)
-        }
-
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,19 +64,14 @@ class ImagesListFragment : Fragment() {
     }
 
     private fun initUi() {
-        if (imageListFragmentViewModel != null) {
-            (imageListFragmentViewModel as ImagesListFragmentViewModel)
-                .albumId.observe(viewLifecycleOwner, { albumIdLong ->
-                    setToolbarText(albumIdLong)
-                    if (albumIdLong != null) {
-                        setPicturesRecyclerView()
-                    } else {
-                        onGetPicturesListFailed()
-                    }
-                })
-        } else {
-            onGetPicturesListFailed()
-        }
+        imageListFragmentViewModel.albumId.observe(viewLifecycleOwner, { albumIdLong ->
+            setToolbarText(albumIdLong)
+            if (albumIdLong != null) {
+                setPicturesRecyclerView()
+            } else {
+                onGetPicturesListFailed()
+            }
+        })
     }
 
     private fun setToolbarText(albumIdLong: Long?) {
@@ -100,7 +89,7 @@ class ImagesListFragment : Fragment() {
 
     private fun getPicturesList() {
         binding.imagesListProgressBar.visible()
-        imageListFragmentViewModel?.picturesList?.observe(viewLifecycleOwner, { picturesList ->
+        imageListFragmentViewModel.picturesList.observe(viewLifecycleOwner, { picturesList ->
             if (picturesList.isNotEmpty()) {
                 onPicturesListReceived(picturesList)
             } else {
@@ -120,13 +109,9 @@ class ImagesListFragment : Fragment() {
     }
 
     private fun onItemSelected(picture: PictureModel) {
-        val pictureIdString: String? = if (picture.pictureId != null) {
-            picture.pictureId.toString()
-        } else {
-            null
-        }
+        val pictureId: String? = picture.pictureId?.toString()
         findNavController().navigate(
-            AlbumsViewPagerFragmentDirections.openImageDetailFragment(pictureIdString),
+            AlbumsViewPagerFragmentDirections.openImageDetailFragment(pictureId),
             navOptions {
                 animationBuilder(this)
             }

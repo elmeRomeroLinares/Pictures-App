@@ -17,32 +17,30 @@ import javax.inject.Inject
 object ServiceLocator {
     private val lock = Any()
 
-    @Inject
-    lateinit var localDataSourceImplementation: LocalDataSourceImplementation
-
     @Volatile
     var picturesRepository: PicturesRepository? = null @VisibleForTesting set
 
-    fun providePicturesRepository(context: Context): PicturesRepository {
+    fun providePicturesRepository(
+        localDataSourceImplementation: LocalDataSourceImplementation,
+        remoteDataSourceImplementation: RemoteDataSourceImplementation,
+        networkStatusChecker: NetworkStatusChecker
+    ): PicturesRepository {
         synchronized(this) {
-            return picturesRepository ?: createPicturesRepository(context)
+            return picturesRepository ?: createPicturesRepository(localDataSourceImplementation, remoteDataSourceImplementation, networkStatusChecker)
         }
     }
 
-    private fun createPicturesRepository(context: Context): PicturesRepository {
+    private fun createPicturesRepository(
+        localDataSourceImplementation: LocalDataSourceImplementation,
+        remoteDataSourceImplementation: RemoteDataSourceImplementation,
+        networkStatusChecker: NetworkStatusChecker
+    ): PicturesRepository {
         val newPicturesRepository = PicturesRepositoryImplementation(
             localDataSourceImplementation,
-            createRemoteDataSource(),
-            buildNetworkStatusChecker(context)
+            remoteDataSourceImplementation,
+            networkStatusChecker
         )
         picturesRepository = newPicturesRepository
         return newPicturesRepository
     }
-
-    private fun createRemoteDataSource(): RemoteDataSourceImplementation =
-        RemoteDataSourceImplementation(buildApiService())
-
-    private fun buildNetworkStatusChecker(context: Context): NetworkStatusChecker =
-        NetworkStatusChecker(context.getSystemService(ConnectivityManager::class.java))
-
 }

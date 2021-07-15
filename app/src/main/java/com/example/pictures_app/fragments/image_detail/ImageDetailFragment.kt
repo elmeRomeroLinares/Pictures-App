@@ -19,18 +19,23 @@ import com.example.pictures_app.model.PictureModel
 import com.example.pictures_app.utils.*
 import com.example.pictures_app.utils.SharePictureUtil.getSharePictureIntent
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ImageDetailFragment : Fragment() {
 
-    private val safeArguments: ImageDetailFragmentArgs by navArgs()
-
-    private val imageDetailFragmentViewModel by viewModels<ImageDetailFragmentViewModel> {
-        ImageDetailFragmentViewModelFactory(safeArguments.elementId, PicturesApplication.picturesRepository)
-    }
-
     private var _binding: FragmentImageDetailBinding? = null
     private val binding get() = _binding!!
+
+    private val safeArguments: ImageDetailFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var imageDetailFragmentViewModelFactory: ImageDetailFragmentViewModel.AssistedFactory
+
+    private val imageDetailFragmentViewModel by viewModels<ImageDetailFragmentViewModel> {
+        ImageDetailFragmentViewModel.provideFactory(
+            imageDetailFragmentViewModelFactory, safeArguments.elementId)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

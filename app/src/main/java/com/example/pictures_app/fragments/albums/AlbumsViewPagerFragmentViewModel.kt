@@ -1,15 +1,19 @@
 package com.example.pictures_app.fragments.albums
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.pictures_app.PicturesApplication
 import com.example.pictures_app.model.AlbumPicturesModel
 import com.example.pictures_app.repository.PicturesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AlbumsViewPagerFragmentViewModel (
+@HiltViewModel
+class AlbumsViewPagerFragmentViewModel @Inject constructor(
     private val repository: PicturesRepository
 ) : ViewModel() {
 
@@ -18,6 +22,7 @@ class AlbumsViewPagerFragmentViewModel (
         MutableLiveData()
 
     init {
+        Log.d("Repository", repository.toString())
         getAlbums()
     }
 

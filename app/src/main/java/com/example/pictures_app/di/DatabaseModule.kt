@@ -42,6 +42,4 @@ object DatabaseModule {
     fun providePostsDao(database: PicturesAppDatabase): PostsDao {
         return database.postsDao()
     }
-
-
 }

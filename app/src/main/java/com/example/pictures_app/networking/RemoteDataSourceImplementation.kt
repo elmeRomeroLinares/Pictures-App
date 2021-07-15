@@ -2,10 +2,13 @@ package com.example.pictures_app.networking
 
 import com.example.pictures_app.data.PicturesAlbumsPostsDataSource
 import com.example.pictures_app.model.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val BASE_URL = "https://jsonplaceholder.typicode.com"
 
-class RemoteDataSourceImplementation (
+@Singleton
+class RemoteDataSourceImplementation @Inject constructor(
     private val remoteApiService: RemoteApiService
 ) : PicturesAlbumsPostsDataSource {
 

@@ -14,19 +14,24 @@ import com.example.pictures_app.model.PostModel
 import com.example.pictures_app.utils.Notifier
 import com.example.pictures_app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PostDetailFragment : Fragment() {
-
-    private val postDetailFragmentViewModel by viewModels<PostDetailFragmentViewModel> {
-        PostDetailFragmentViewModelFactory(safeArguments.elementId, PicturesApplication.picturesRepository)
-    }
-    private lateinit var postDetailFragmentViewModelFactory: PostDetailFragmentViewModelFactory
 
     private var _binding: FragmentPostDetailBinding? = null
     private val binding get() = _binding!!
 
     private val safeArguments: PostDetailFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var postDetailFragmentViewModelFactory:
+            PostDetailFragmentViewModel.PostDetailViewModelAssistedFactory
+
+    private val postDetailFragmentViewModel by viewModels<PostDetailFragmentViewModel> {
+        PostDetailFragmentViewModel.provideFactory(
+            postDetailFragmentViewModelFactory, safeArguments.elementId)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

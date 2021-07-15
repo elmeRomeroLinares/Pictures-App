@@ -1,6 +1,7 @@
 package com.example.pictures_app.fragments.albums
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,10 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AlbumsViewPagerFragment : Fragment() {
 
-    private val albumsViewPagerFragmentViewModel by viewModels<AlbumsViewPagerFragmentViewModel> {
-        AlbumsViewPagerFragmentViewModelFactory(PicturesApplication.picturesRepository)
-    }
-
+    private val albumsViewPagerFragmentViewModel: AlbumsViewPagerFragmentViewModel by viewModels()
     private var _binding: FragmentAlbumsViewPagerBinding? = null
     private val binding get() = _binding!!
 
