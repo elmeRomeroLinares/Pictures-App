@@ -18,17 +18,18 @@ import com.example.pictures_app.utils.gone
 import com.example.pictures_app.utils.toast
 import com.example.pictures_app.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PostsListFragment : Fragment() {
 
-    private val postsListFragmentViewModel: PostsListFragmentViewModel by viewModels()
     private var _binding: FragmentPostsListBinding? = null
     private val binding get() = _binding!!
 
-    private val postsRecyclerViewAdapter by lazy {
-        PostsRecyclerViewAdapter(::onPostSelected)
-    }
+    private val postsListFragmentViewModel: PostsListFragmentViewModel by viewModels()
+
+    @Inject
+    lateinit var postsRecyclerViewAdapter: PostsRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +59,9 @@ class PostsListFragment : Fragment() {
     private fun setPostsRecyclerView() {
         binding.postsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.postsRecyclerView.adapter = postsRecyclerViewAdapter
+        postsRecyclerViewAdapter.setOnItemClickListener {
+            onPostSelected(it)
+        }
     }
 
     private fun getPostsList() {

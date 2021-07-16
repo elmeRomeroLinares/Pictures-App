@@ -5,13 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pictures_app.databinding.ItemPicturesRecyclerViewBinding
 import com.example.pictures_app.model.PictureModel
+import com.example.pictures_app.model.PostModel
 import com.example.pictures_app.utils.loadContentByGlide
+import dagger.hilt.android.scopes.FragmentScoped
+import javax.inject.Inject
 
-class PicturesRecyclerViewAdapter(
-    private val onItemClickListener: (PictureModel) -> Unit
-) : RecyclerView.Adapter<PicturesItemHolder>() {
+@FragmentScoped
+class PicturesRecyclerViewAdapter @Inject constructor(
+): RecyclerView.Adapter<PicturesItemHolder>() {
 
     private val recyclerViewData: MutableList<PictureModel> = mutableListOf()
+    private var onItemClickListener: ((PictureModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PicturesItemHolder {
         val itemBinding = ItemPicturesRecyclerViewBinding.inflate(
@@ -33,14 +37,20 @@ class PicturesRecyclerViewAdapter(
         recyclerViewData.addAll(data)
         notifyDataSetChanged()
     }
+
+    fun setOnItemClickListener(listener: (PictureModel) -> Unit) {
+        onItemClickListener = listener
+    }
 }
 
 class PicturesItemHolder(
     private val itemBinding: ItemPicturesRecyclerViewBinding
 ) : RecyclerView.ViewHolder(itemBinding.root) {
-    fun bindPictureData(picture: PictureModel, onItemClickListener: (PictureModel) -> Unit) {
+    fun bindPictureData(picture: PictureModel, onItemClickListener: ((PictureModel) -> Unit)?) {
         itemBinding.root.setOnClickListener {
-            onItemClickListener(picture)
+            onItemClickListener?.let{
+                it(picture)
+            }
         }
         itemBinding.picturesThumbnailImageView.loadContentByGlide(picture.pictureThumbnailUrl)
         itemBinding.picturesTitleTextView.text = picture.pictureTitle?: "Unknown"

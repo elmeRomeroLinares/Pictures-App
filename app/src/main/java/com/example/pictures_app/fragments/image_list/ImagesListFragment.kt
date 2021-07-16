@@ -41,9 +41,8 @@ class ImagesListFragment : Fragment() {
         ImagesListFragmentViewModel.provideFactory(imagesListFragmentViewModelFactory, albumIdLong)
     }
 
-    private val picturesRecyclerViewAdapter by lazy {
-        PicturesRecyclerViewAdapter(::onItemSelected)
-    }
+    @Inject
+    lateinit var picturesRecyclerViewAdapter: PicturesRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,6 +83,9 @@ class ImagesListFragment : Fragment() {
     private fun setPicturesRecyclerView() {
         binding.imagesListRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.imagesListRecyclerView.adapter = picturesRecyclerViewAdapter
+        picturesRecyclerViewAdapter.setOnItemClickListener {
+            onItemSelected(it)
+        }
         getPicturesList()
     }
 

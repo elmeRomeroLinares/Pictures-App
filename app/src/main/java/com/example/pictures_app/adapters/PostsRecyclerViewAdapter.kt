@@ -6,12 +6,16 @@ import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pictures_app.databinding.ItemPostsRecyclerViewBinding
 import com.example.pictures_app.model.PostModel
+import dagger.hilt.android.scopes.FragmentScoped
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PostsRecyclerViewAdapter(
-    private val onItemClickListener: (PostModel) -> Unit
-) : RecyclerView.Adapter<PostItemHolder>() {
+@FragmentScoped
+class PostsRecyclerViewAdapter @Inject constructor(
+): RecyclerView.Adapter<PostItemHolder>() {
 
     private val recyclerViewData: MutableList<PostModel> = mutableListOf()
+    private var onItemClickListener: ((PostModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostItemHolder {
         val itemBinding = ItemPostsRecyclerViewBinding.inflate(
@@ -34,14 +38,20 @@ class PostsRecyclerViewAdapter(
         notifyDataSetChanged()
     }
 
+    fun setOnItemClickListener(listener: (PostModel) -> Unit) {
+        onItemClickListener = listener
+    }
+
 }
 
 class PostItemHolder(
     private val binding: ItemPostsRecyclerViewBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bindPostData(post: PostModel, onItemClickListener: (PostModel) -> Unit) {
+    fun bindPostData(post: PostModel, onItemClickListener: ((PostModel) -> Unit)?) {
         binding.root.setOnClickListener {
-            onItemClickListener(post)
+            onItemClickListener?.let {
+                it(post)
+            }
         }
         binding.postTitleTv.text = post.postTitle
         binding.postBodyTv.text = post.postBody
