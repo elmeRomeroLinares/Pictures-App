@@ -51,9 +51,14 @@ class PicturesRepositoryImplementation @Inject constructor(
     private suspend fun onServerAlbumsListReceived(
         albumsList: List<AlbumPicturesModel>
     ): List<AlbumPicturesModel> {
-        val choppedAlbumsList = albumsList.dropLast(albumsList.size - 2)
-        localDataSource.addAlbumsToDataBase(choppedAlbumsList)
-        return choppedAlbumsList
+        return if (albumsList.size > 2) {
+            val choppedAlbumsList = albumsList.dropLast(albumsList.size - 2)
+            localDataSource.addAlbumsToDataBase(choppedAlbumsList)
+            choppedAlbumsList
+        } else {
+            localDataSource.addAlbumsToDataBase(albumsList)
+            albumsList
+        }
     }
 
     override suspend fun getPicturesFromAlbumId(albumId: Long): List<PictureModel> {
@@ -106,7 +111,7 @@ class PicturesRepositoryImplementation @Inject constructor(
                 }
             }
         } else {
-            val result = remoteDataSource.getPosts(USER_ID)
+            val result = localDataSource.getPosts(USER_ID)
             if (result is Success) {
                 result.data
             } else {

@@ -2,11 +2,11 @@ package com.example.pictures_app.data.source
 
 import com.example.pictures_app.data.PicturesAlbumsPostsDataSource
 import com.example.pictures_app.database.LocalDataSource
-import com.example.pictures_app.model.AlbumPicturesModel
-import com.example.pictures_app.model.PictureModel
-import com.example.pictures_app.model.PostModel
+import com.example.pictures_app.model.*
+import com.example.pictures_app.networking.NetworkStatusCheckerInterface
 import com.example.pictures_app.repository.PicturesRepositoryImplementation
 import com.squareup.moshi.JsonAdapter
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -16,7 +16,8 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class PicturesRepositoryImplementationTest {
-/*
+    private val FIRST_ALBUM_LONG: Long = 1L
+
     private val album1 = AlbumPicturesModel(1,1,"quidem molestiae enim")
     private val album2 = AlbumPicturesModel(1,2,"sunt qui excepturi placeat culpa")
 
@@ -84,7 +85,7 @@ class PicturesRepositoryImplementationTest {
             localPosts.toMutableList(), localPictures.toMutableList(), localAlbums.toMutableList())
     }
 
-    @Test
+    /*@Test
     fun getAllAlbums_requestsAllAlbumsFromRemoteDataSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(true)
         picturesRepositoryImplementation = PicturesRepositoryImplementation(localDataSource,
@@ -93,9 +94,9 @@ class PicturesRepositoryImplementationTest {
         val albums = picturesRepositoryImplementation.getAllAlbums()
 
         assertEquals(albums, remoteAlbums)
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun getAllAlbums_requestAllAlbumsFromLocalDataSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(false)
         picturesRepositoryImplementation = PicturesRepositoryImplementation(localDataSource,
@@ -104,9 +105,9 @@ class PicturesRepositoryImplementationTest {
         val albums = picturesRepositoryImplementation.getAllAlbums()
 
         assertEquals(albums, localAlbums)
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun errorOnGetAllAlbums_requestsAllAlbumsFromRemoteDataSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(true)
         remoteDataSource = FakeRemoteDataSource(null,
@@ -118,9 +119,9 @@ class PicturesRepositoryImplementationTest {
         val albums = picturesRepositoryImplementation.getAllAlbums()
 
         assertEquals(albums, localAlbums)
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun errorOnGetAllAlbums_requestsAllAlbumsFromLocalDataSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(false)
         localDataSource = FakeLocalDataSource(null,
@@ -131,9 +132,9 @@ class PicturesRepositoryImplementationTest {
 
         val albums = picturesRepositoryImplementation.getAllAlbums()
         assertEquals(albums, null)
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun getPicturesFromAlbumId1_requestPicturesFromRemoteSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(true)
         picturesRepositoryImplementation = PicturesRepositoryImplementation(localDataSource,
@@ -141,7 +142,7 @@ class PicturesRepositoryImplementationTest {
 
         val picturesAlbum1 = picturesRepositoryImplementation.getPicturesFromAlbumId(1)
         assertEquals(picturesAlbum1, remotePicturesByAlbums[album1])
-    }
+    }*/
 
     @Test
     fun getPicturesFromAlbumId2_requestPicturesFromRemoteSource() = runBlocking {
@@ -153,7 +154,7 @@ class PicturesRepositoryImplementationTest {
         assertEquals(picturesAlbum2, remotePicturesByAlbums[album2])
     }
 
-    @Test
+    /*@Test
     fun errorOnGetPicturesFromAlbumId1_requestPicturesFromRemoteSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(true)
         remoteDataSource = FakeRemoteDataSource(null,
@@ -165,9 +166,9 @@ class PicturesRepositoryImplementationTest {
         val picturesAlbum1 = picturesRepositoryImplementation.getPicturesFromAlbumId(1)
 
         assertEquals(picturesAlbum1, localPicturesByAlbums[album1])
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun getPicturesFromAlbumId1_requestPicturesFromLocalSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(false)
         picturesRepositoryImplementation = PicturesRepositoryImplementation(localDataSource,
@@ -175,9 +176,9 @@ class PicturesRepositoryImplementationTest {
 
         val picturesAlbum1 = picturesRepositoryImplementation.getPicturesFromAlbumId(1)
         assertEquals(picturesAlbum1, localPicturesByAlbums[album1])
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun errorOnGetPicturesFromAlbumId1_requestPicturesFromLocalSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(false)
         localDataSource = FakeLocalDataSource(null,
@@ -189,9 +190,9 @@ class PicturesRepositoryImplementationTest {
         val picturesAlbum1 = picturesRepositoryImplementation.getPicturesFromAlbumId(1)
 
         assertTrue(picturesAlbum1.isEmpty())
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun getAllUserPosts_requestPostsFromRemoteSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(true)
 
@@ -201,9 +202,9 @@ class PicturesRepositoryImplementationTest {
         val posts = picturesRepositoryImplementation.getUserPosts()
 
         assertEquals(posts, remotePosts)
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun errorOnGetAllUserPosts_requestPostsFromRemoteSource() = runBlocking {
         networkStatusChecker = FakeNetworkStatusChecker(true)
         remoteDataSource = FakeRemoteDataSource(null,
@@ -215,7 +216,7 @@ class PicturesRepositoryImplementationTest {
         val posts = picturesRepositoryImplementation.getUserPosts()
 
         assertEquals(posts, localPosts)
-    }
+    }*/
 
     @Test
     fun getAllUserPosts_requestPostsFromLocalSource() = runBlocking {
@@ -227,6 +228,37 @@ class PicturesRepositoryImplementationTest {
         val posts = picturesRepositoryImplementation.getUserPosts()
 
         assertEquals(posts, localPosts)
-    }*/
+    }
+
+    @Test
+    fun `repository getPicturesFromAlbumId1 with network returns all albums from remote data source`() =
+        runBlocking {
+            val localDataSourceMk = mockk<LocalDataSource>()
+            val remoteDataSourceMk = mockk<PicturesAlbumsPostsDataSource>()
+            val networkStatusCheckerMk = mockk<NetworkStatusCheckerInterface>()
+
+            val safeLocalPicturesByAlbums1: List<PictureModel> =
+                localPicturesByAlbums[album1]?: listOf(picture2Album1)
+
+            val safeRemotePicturesByAlbums1: List<PictureModel> =
+                remotePicturesByAlbums[album1]?: listOf(picture1Album1, picture2Album1)
+
+            coEvery { localDataSourceMk.getAlbumPhotos(FIRST_ALBUM_LONG) } returns
+                    Success(safeLocalPicturesByAlbums1) andThen Failure(Throwable())
+
+            coEvery { localDataSourceMk.addPicturesToDataBase( any() ) } just Runs
+
+            coEvery { remoteDataSourceMk.getAlbumPhotos(FIRST_ALBUM_LONG) } returns
+                    Success(safeRemotePicturesByAlbums1) andThen Failure(Throwable())
+
+            every { networkStatusCheckerMk.hasInternetConnection() } returns true
+
+            picturesRepositoryImplementation = PicturesRepositoryImplementation(localDataSourceMk,
+                remoteDataSourceMk, networkStatusCheckerMk)
+
+            val picturesAlbum1 = picturesRepositoryImplementation.getPicturesFromAlbumId(FIRST_ALBUM_LONG)
+
+            assertEquals(picturesAlbum1, remotePicturesByAlbums[album1])
+        }
 
 }
