@@ -1,9 +1,9 @@
 name: Pictures App CI
 on: 
   push:
-    branches: [testing, master]
+    branches: [testing, main]
   pull_request:
-    branches: [testing, master]
+    branches: [testing, main]
     
 jobs:
   build:
