@@ -17,7 +17,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.example.pictures_app.R
-import com.example.pictures_app.glide.GlideApp
 
 private const val userAgent =
     "Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36"
@@ -30,7 +29,7 @@ fun ImageView.loadContentByGlide(url: String?): LiveData<Bitmap> {
     val glideUrl = GlideUrl(url, headers)
     val imageView: ImageView = this
 
-    GlideApp.with(context)
+    /*GlideApp.with(context)
         .asBitmap()
         .load(glideUrl)
         .placeholder(getCircularProgressDrawable(context))
@@ -46,7 +45,7 @@ fun ImageView.loadContentByGlide(url: String?): LiveData<Bitmap> {
             override fun onLoadCleared(placeholder: Drawable?) {
                 pictureBitmap.postValue(null)
             }
-        })
+        })*/
 
     return pictureBitmap
 }
